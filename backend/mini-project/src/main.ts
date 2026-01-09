@@ -1,0 +1,33 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import 'reflect-metadata';
+import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
+  const config = new DocumentBuilder()
+    .setTitle('Exam Management API')
+    .setDescription('The Exam Management API documentation')
+    .setVersion('1.0')
+    .build();
+
+  const documentation = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger', app, documentation);
+
+  const httpAdapter = app.getHttpAdapter().getInstance();
+  httpAdapter.get('/swagger-json', (_req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(documentation);
+  });
+  await app.listen(process.env.PORT ?? 3000);
+}
+bootstrap();
