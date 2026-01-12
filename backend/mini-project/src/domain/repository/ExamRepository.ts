@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Injectable } from '@nestjs/common';
 import { Repository, DataSource } from 'typeorm';
 import { Exam } from '../entities/Exam.entity';

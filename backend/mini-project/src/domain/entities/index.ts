@@ -5,3 +5,4 @@ export { Option } from './Option.entity';
 export { StudentExam } from './StudentExam.entity';
 export { StudentExamQuestion } from './StudentExamQuestion.entity';
 export { StudentExamAnswer } from './StudentExamAnswer.entity';
+export { RefreshToken } from './refresh-token';

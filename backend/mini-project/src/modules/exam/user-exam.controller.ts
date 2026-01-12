@@ -1,7 +1,7 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ExamSummaryResponse } from 'src/service/dto/response/examSumary.respone';
-import { ExamService } from 'src/service/exam.service';
+import { ExamService } from 'src/modules/exam/exam.service';
 
 @ApiTags('User Exams')
 @Controller('api/user/exams')

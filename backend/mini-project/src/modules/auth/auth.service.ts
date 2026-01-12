@@ -1,15 +1,19 @@
 import { UserRepository } from 'src/domain/repository';
-import { AuthRequest } from './dto/request/auth.request';
+import { AuthRequest } from '../../service/dto/request/auth.request';
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/domain/entities/User.entity';
 import { UserRole } from 'src/domain/enum/UserRole.enum';
 import { sha256 } from 'src/utils/hash.utils';
-import { AuthResponse } from './dto/response/auth.respone';
-import { UpdatePasswordRequest } from './dto/request/updatePassword.request';
+import { AuthResponse } from '../../service/dto/response/auth.respone';
+import { UpdatePasswordRequest } from '../../service/dto/request/updatePassword.request';
+import { TokenService } from './token.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly tokenService: TokenService,
+  ) {}
   async register(request: AuthRequest) {
     if (await this.userRepository.isExistingUser(request.username)) {
       throw new Error('User already exists');
@@ -26,10 +30,18 @@ export class AuthService {
     if (!user || user.password !== sha256(request.password)) {
       throw new Error('Invalid username or password');
     }
-    const response: AuthResponse = new AuthResponse();
-    response.username = user.username;
-    response.role = user.role;
-    return response;
+    const payload: AuthResponse = {
+      userId: user.userId,
+      username: user.username,
+      role: user.role,
+    };
+    const accessToken = this.tokenService.generateAccessToken(
+      user.userId,
+      user.username,
+      user.role,
+    );
+    const refreshToken = await this.tokenService.createRefreshToken(user);
+    return { ...payload, accessToken, refreshToken };
   }
 
   async updatePassword(request: UpdatePasswordRequest): Promise<AuthResponse> {

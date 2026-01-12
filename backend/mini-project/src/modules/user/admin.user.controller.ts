@@ -1,8 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { UserResponse } from 'src/service/dto/response/user.response';
-import { UserService } from 'src/service/user.service';
+import { UserService } from 'src/modules/user/user.service';
+import { JwtGuard } from 'src/modules/auth/jwt.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('api/admin/users')
+@UseGuards(JwtGuard)
+@ApiBearerAuth()
 export class AdminUserController {
   constructor(private readonly userService: UserService) {}
   @Get()

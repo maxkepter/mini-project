@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { QuestionRepository } from 'src/domain/repository';
-import { CreateQuestionRequest } from './dto/request/createQuestion.request';
+import { CreateQuestionRequest } from '../../service/dto/request/createQuestion.request';
 import { Option, Question } from 'src/domain/entities';
-import { QuestionResponse } from './dto/response/question.respone';
-import { OptionMapper } from './mapper/option.mapper';
-import { QuestionMapper } from './mapper/question.mapper';
+import { QuestionResponse } from '../../service/dto/response/question.respone';
+import { OptionMapper } from '../../service/mapper/option.mapper';
+import { QuestionMapper } from '../../service/mapper/question.mapper';
 
 @Injectable()
 export class QuestionService {

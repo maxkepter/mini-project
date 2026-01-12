@@ -4,7 +4,7 @@ import { SelectOptionRequest } from 'src/service/dto/request/selectOption.reques
 import { StudentExamCreationRequest } from 'src/service/dto/request/studentExamCreation.request';
 import { StudentExamResponse } from 'src/service/dto/response/studentExam.response';
 import { StudentExamSummaryResponse } from 'src/service/dto/response/studentExamSumary.response';
-import { StudentExamService } from 'src/service/studentExam.service';
+import { StudentExamService } from 'src/modules/student-exam/student-exam.service';
 
 @ApiTags('Student Exams')
 @Controller('api/student/exams')

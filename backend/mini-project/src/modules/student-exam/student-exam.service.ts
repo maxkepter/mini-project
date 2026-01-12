@@ -5,7 +5,7 @@ import {
   StudentExamRepository,
   UserRepository,
 } from 'src/domain/repository';
-import { StudentExamCreationRequest } from './dto/request/studentExamCreation.request';
+import { StudentExamCreationRequest } from '../../service/dto/request/studentExamCreation.request';
 import {
   Option,
   Question,
@@ -15,12 +15,12 @@ import {
 } from 'src/domain/entities';
 import { shuffleArray } from 'src/utils/array.utils';
 import { StudentExamStatus } from 'src/domain/enum';
-import { StudentExamResponse } from './dto/response/studentExam.response';
-import { StudentExamMapper } from './mapper/studentExam.mapper';
-import { SelectOptionRequest } from './dto/request/selectOption.request';
-import { StudentExamSelectionRequest } from './dto/request/studentExamSelection.request';
+import { StudentExamResponse } from '../../service/dto/response/studentExam.response';
+import { StudentExamMapper } from '../../service/mapper/studentExam.mapper';
+import { SelectOptionRequest } from '../../service/dto/request/selectOption.request';
+import { StudentExamSelectionRequest } from '../../service/dto/request/studentExamSelection.request';
 import { Injectable } from '@nestjs/common';
-import { StudentExamSummaryResponse } from './dto/response/studentExamSumary.response';
+import { StudentExamSummaryResponse } from '../../service/dto/response/studentExamSumary.response';
 
 @Injectable()
 export class StudentExamService {

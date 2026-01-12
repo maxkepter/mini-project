@@ -6,6 +6,7 @@ import { Option } from '../domain/entities/Option.entity';
 import { StudentExam } from '../domain/entities/StudentExam.entity';
 import { StudentExamQuestion } from '../domain/entities/StudentExamQuestion.entity';
 import { StudentExamAnswer } from '../domain/entities/StudentExamAnswer.entity';
+import { RefreshToken } from '../domain/entities/refresh-token';
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: 'mssql',
@@ -22,6 +23,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     StudentExam,
     StudentExamQuestion,
     StudentExamAnswer,
+    RefreshToken,
   ],
   synchronize: process.env.NODE_ENV !== 'production',
   options: {

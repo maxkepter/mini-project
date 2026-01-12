@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateQuestionRequest } from 'src/service/dto/request/createQuestion.request';
-import { QuestionService } from 'src/service/question.service';
+import { QuestionService } from 'src/modules/quesiton/question.service';
 
 @ApiTags('Admin Questions')
 @Controller('api/admin/questions')

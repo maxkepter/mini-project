@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ExamService } from 'src/service/exam.service';
+import { ExamService } from 'src/modules/exam/exam.service';
 import { CreateExamRequest } from 'src/service/dto/request/createExam.request';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 

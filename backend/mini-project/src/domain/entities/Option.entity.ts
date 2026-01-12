@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Question } from './Question.entity';
 
-@Entity('Option')
+@Entity('[Option]')
 export class Option {
   @PrimaryGeneratedColumn({ name: 'optionId' })
   optionId: number;

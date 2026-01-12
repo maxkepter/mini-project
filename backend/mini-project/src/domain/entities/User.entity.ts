@@ -1,21 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  Unique,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { StudentExam } from './StudentExam.entity';
 import { UserRole } from '../enum/UserRole.enum';
 
-@Entity('User')
-@Unique(['username'])
+@Entity('[User]')
 export class User {
   @PrimaryGeneratedColumn({ name: 'userId' })
   userId: number;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, unique: true, name: 'username' })
   username: string;
 
   @Column({ type: 'varchar', length: 255, name: 'password' })

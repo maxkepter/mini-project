@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ExamRepository, QuestionRepository } from 'src/domain/repository';
-import { CreateExamRequest } from './dto/request/createExam.request';
+import { CreateExamRequest } from '../../service/dto/request/createExam.request';
 import { Exam } from 'src/domain/entities';
 import { ExamStatus } from 'src/domain/enum';
-import { ExamResponse } from './dto/response/exam.respone';
-import { ExamMapper } from './mapper/exam.mapper';
-import { ExamSummaryResponse } from './dto/response/examSumary.respone';
+import { ExamResponse } from '../../service/dto/response/exam.respone';
+import { ExamMapper } from '../../service/mapper/exam.mapper';
+import { ExamSummaryResponse } from '../../service/dto/response/examSumary.respone';
 
 @Injectable()
 export class ExamService {
