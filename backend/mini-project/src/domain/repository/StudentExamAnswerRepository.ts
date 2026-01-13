@@ -31,7 +31,7 @@ export class StudentExamAnswerRepository implements IRepository<StudentExamAnswe
 
   async update(
     id: number,
-    item: StudentExamAnswer,
+    item: Partial<StudentExamAnswer>,
   ): Promise<StudentExamAnswer | null> {
     await this.repository.update(id, item);
     return await this.findById(id);

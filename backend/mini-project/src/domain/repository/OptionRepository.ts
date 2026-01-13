@@ -29,7 +29,7 @@ export class OptionRepository implements IRepository<Option> {
     return await this.repository.save(option);
   }
 
-  async update(id: number, item: Option): Promise<Option | null> {
+  async update(id: number, item: Partial<Option>): Promise<Option | null> {
     await this.repository.update(id, item);
     return await this.findById(id);
   }

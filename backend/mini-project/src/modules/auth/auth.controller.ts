@@ -3,9 +3,9 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/modules/auth/auth.service';
 import { AuthRequest } from 'src/service/dto/request/auth.request';
 import { UpdatePasswordRequest } from 'src/service/dto/request/updatePassword.request';
-import { AuthResponse } from 'src/service/dto/response/auth.respone';
-import { RefreshTokenRequest } from './dtos';
+import { RefreshTokenRequest } from './dtos.request';
 import { TokenService } from './token.service';
+import { AuthResponse } from './dtos.response';
 
 @ApiTags('Authentication')
 @Controller('api/auth')
@@ -39,6 +39,7 @@ export class AuthController {
   })
   @Post('refresh')
   async refresh(@Body() request: RefreshTokenRequest): Promise<AuthResponse> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await this.tokenService.refreshAccessToken(request);
   }
   @Post('change-password')

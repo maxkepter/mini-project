@@ -45,7 +45,7 @@ export class QuestionRepository implements IRepository<Question> {
     return await this.repository.save(question);
   }
 
-  async update(id: number, item: Question): Promise<Question | null> {
+  async update(id: number, item: Partial<Question>): Promise<Question | null> {
     await this.repository.update(id, item);
     return await this.findById(id);
   }

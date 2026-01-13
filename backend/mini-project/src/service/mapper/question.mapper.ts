@@ -1,7 +1,7 @@
 import { Option, Question } from 'src/domain/entities';
 import { QuestionResponse } from '../dto/response/question.respone';
-import { CreateQuestionRequest } from '../dto/request/createQuestion.request';
 import { OptionResponse } from '../dto/response/option.response';
+import { QuestionRequest } from '../dto/request/createQuestion.request';
 
 export class QuestionMapper {
   static toResponse(question: Question): QuestionResponse {
@@ -17,7 +17,7 @@ export class QuestionMapper {
     });
     return response;
   }
-  static toEntity(request: CreateQuestionRequest): Question {
+  static toEntity(request: QuestionRequest): Question {
     const question = new Question();
     question.content = request.content;
     question.options = request.options.map((opt) => {

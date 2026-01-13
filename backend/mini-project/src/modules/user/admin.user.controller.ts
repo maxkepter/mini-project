@@ -1,8 +1,8 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { UserResponse } from 'src/service/dto/response/user.response';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { UserService } from 'src/modules/user/user.service';
 import { JwtGuard } from 'src/modules/auth/jwt.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { UserResponse } from './dtos.response';
 
 @Controller('api/admin/users')
 @UseGuards(JwtGuard)
@@ -12,5 +12,9 @@ export class AdminUserController {
   @Get()
   async getAllUsers(): Promise<UserResponse[]> {
     return await this.userService.getAllUsers();
+  }
+  @Get('profile/:userId')
+  async getUserProfile(@Param('id') id: number): Promise<UserResponse> {
+    return await this.userService.getUserProfile(id);
   }
 }

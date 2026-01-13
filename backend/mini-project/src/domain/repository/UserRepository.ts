@@ -42,7 +42,7 @@ export class UserRepository implements IRepository<User> {
     return await this.repository.save(user);
   }
 
-  async update(id: number, item: User): Promise<User | null> {
+  async update(id: number, item: Partial<User>): Promise<User | null> {
     await this.repository.update(id, item);
     return await this.findById(id);
   }

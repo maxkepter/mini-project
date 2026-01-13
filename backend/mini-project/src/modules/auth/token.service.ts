@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { User, RefreshToken } from 'src/domain/entities';
 import { RefreshTokenRepository } from 'src/domain/repository';
 import { v4 as uuidv4 } from 'uuid';
-import { AuthResponse } from '../../service/dto/response/auth.respone';
-import { RefreshTokenRequest } from './dtos';
+import { RefreshTokenRequest } from './dtos.request';
+import { AuthResponse } from './dtos.response';
 
 @Injectable()
 export class TokenService {
@@ -65,5 +65,9 @@ export class TokenService {
 
   async revokeRefreshToken(token: string): Promise<boolean> {
     return await this.refreshTokenRepository.revokeByToken(token);
+  }
+
+  async revokeTokensByUserId(userId: number): Promise<number> {
+    return await this.refreshTokenRepository.revokeByUserId(userId);
   }
 }

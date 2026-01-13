@@ -56,4 +56,14 @@ export class RefreshTokenRepository implements IRepository<RefreshToken> {
     await this.repository.save(entity);
     return true;
   }
+
+  async revokeByUserId(userId: number): Promise<number> {
+    const result = await this.repository
+      .createQueryBuilder()
+      .update(RefreshToken)
+      .set({ isRevoked: true, revokedDate: new Date() })
+      .where('userId = :userId AND isRevoked = false', { userId })
+      .execute();
+    return result.affected ?? 0;
+  }
 }

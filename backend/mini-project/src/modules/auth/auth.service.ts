@@ -1,12 +1,16 @@
 import { UserRepository } from 'src/domain/repository';
 import { AuthRequest } from '../../service/dto/request/auth.request';
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { User } from 'src/domain/entities/User.entity';
 import { UserRole } from 'src/domain/enum/UserRole.enum';
 import { sha256 } from 'src/utils/hash.utils';
-import { AuthResponse } from '../../service/dto/response/auth.respone';
 import { UpdatePasswordRequest } from '../../service/dto/request/updatePassword.request';
 import { TokenService } from './token.service';
+import { AuthResponse } from './dtos.response';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +20,10 @@ export class AuthService {
   ) {}
   async register(request: AuthRequest) {
     if (await this.userRepository.isExistingUser(request.username)) {
-      throw new Error('User already exists');
+      throw new ConflictException('User already exists');
+    }
+    if (request.password.length < 6) {
+      throw new BadRequestException('Password must be at least 6 characters');
     }
     const newUser: User = new User();
     newUser.username = request.username;
@@ -27,8 +34,8 @@ export class AuthService {
 
   async login(request: AuthRequest): Promise<AuthResponse> {
     const user = await this.userRepository.findByUserName(request.username);
-    if (!user || user.password !== sha256(request.password)) {
-      throw new Error('Invalid username or password');
+    if (user?.password !== sha256(request.password)) {
+      throw new BadRequestException('Invalid username or password');
     }
     const payload: AuthResponse = {
       userId: user.userId,
@@ -44,13 +51,20 @@ export class AuthService {
     return { ...payload, accessToken, refreshToken };
   }
 
+  // update password
+
   async updatePassword(request: UpdatePasswordRequest): Promise<AuthResponse> {
+    if (request.newPassword.length < 6) {
+      throw new BadRequestException('Password must be at least 6 characters');
+    }
     const user = await this.userRepository.findByUserName(request.username);
-    if (!user || user.password !== sha256(request.oldPassword)) {
-      throw new Error('Invalid username or password');
+    if (user?.password !== sha256(request.oldPassword)) {
+      throw new BadRequestException('Invalid username or password');
     }
     user.password = sha256(request.newPassword);
-    await this.userRepository.update(user.userId, user);
+    await this.userRepository.update(user.userId, { password: user.password });
+    // revoke all existing refresh tokens after password change
+    await this.tokenService.revokeTokensByUserId(user.userId);
     const response: AuthResponse = new AuthResponse();
     response.username = user.username;
     response.role = user.role;

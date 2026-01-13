@@ -38,7 +38,10 @@ export class StudentExamRepository implements IRepository<StudentExam> {
     return await this.repository.save(studentExam);
   }
 
-  async update(id: number, item: StudentExam): Promise<StudentExam | null> {
+  async update(
+    id: number,
+    item: Partial<StudentExam>,
+  ): Promise<StudentExam | null> {
     await this.repository.update(id, item);
     return await this.findById(id);
   }

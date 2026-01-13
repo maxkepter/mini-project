@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateQuestionRequest } from 'src/service/dto/request/createQuestion.request';
 import { QuestionService } from 'src/modules/quesiton/question.service';
+import { QuestionRequest } from 'src/service/dto/request/createQuestion.request';
 
 @ApiTags('Admin Questions')
 @Controller('api/admin/questions')
@@ -10,9 +10,7 @@ export class AdminQuestionController {
   @Post()
   @ApiOperation({ summary: 'Create question' })
   @ApiResponse({ status: 201 })
-  async createQuestion(
-    @Body() request: CreateQuestionRequest,
-  ): Promise<unknown> {
+  async createQuestion(@Body() request: QuestionRequest): Promise<unknown> {
     return await this.questionService.createQuestion(request);
   }
 
