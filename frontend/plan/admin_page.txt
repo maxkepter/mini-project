@@ -1,7 +1,7 @@
-- view all exam page
+x- view all exam page
 + phân trang
 + tìm theo name, lọc th
-- view exam detail
+x- view exam detail
 + có thể update exam trong này
 - create exam
 - manage question

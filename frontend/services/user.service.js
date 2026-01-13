@@ -14,7 +14,7 @@ export async function getUserProfile() {
 export async function getAllUser() {
   try {
     const $axios = getAxios();
-    const response = await $axios.get(Urls.ADMIN_GET_ALL_USERS);
+    const response = await $axios.get(Urls.ADMIN_USERS);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch all users:", error);
@@ -25,10 +25,51 @@ export async function getAllUser() {
 export async function getUserProfileById(userId) {
   try {
     const $axios = getAxios();
-    const response = await $axios.get(`${Urls.ADMIN_GET_PROFILE_BY_ID}/${userId}`);
+    const response = await $axios.get(
+      `${Urls.ADMIN_GET_PROFILE_BY_ID}/${userId}`
+    );
     return response.data;
   } catch (error) {
     console.error("Failed to fetch user profile by ID:", error);
+    throw error;
+  }
+}
+
+export async function updateUserRole(userId, newRole) {
+  try {
+    const $axios = getAxios();
+    const response = await $axios.patch(`${Urls.ADMIN_USERS}/${userId}/role`, {
+      role: newRole,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update user role:", error);
+    throw new Error(
+      error.response?.data?.message || "Failed to update user role"
+    );
+  }
+}
+
+export async function deactivateUser(userId) {
+  try {
+    const $axios = getAxios();
+    const response = await $axios.delete(`${Urls.ADMIN_USERS}/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to deactivate user:", error);
+    throw error;
+  }
+}
+
+export async function activeUser(userId) {
+  try {
+    const $axios = getAxios();
+    const response = await $axios.patch(
+      `${Urls.ADMIN_USERS}/${userId}/activate`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to activate user:", error);
     throw error;
   }
 }

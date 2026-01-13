@@ -3,7 +3,7 @@ import { Urls } from "@/const/url.const";
 export async function getAllQuestions() {
   try {
     const $axios = getAxios();
-    const response = await $axios.get(Urls.QUESTIONS_GET_ALL);
+    const response = await $axios.get(Urls.ADMIN_QUESTIONS);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch all questions:", error);

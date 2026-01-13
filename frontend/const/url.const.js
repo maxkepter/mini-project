@@ -16,9 +16,12 @@ export const Urls = {
   STUDENT_EXAMS_SUBMIT: "/student/exams/submit",
 
   // Admin
-  ADMIN_GET_ALL_USERS: "/admin/users",
+  ADMIN_USERS: "/admin/users",
   ADMIN_GET_PROFILE_BY_ID: "/admin/user",
   ADMIN_QUESTIONS: "/admin/questions",
+  ADMIN_EXAMS: "/admin/exams",
+  ADMIN_STUDENT_EXAMS: "/admin/student/exams",
+
   // General
   HOME: "/",
 };

@@ -1,4 +1,4 @@
 x- login 
 x- register
-- view profile 
+x- view profile 
 + có update password

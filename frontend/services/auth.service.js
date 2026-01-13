@@ -40,11 +40,14 @@ export async function loginUser(credentials) {
       credentials
     );
     const response = await $axios.post(Urls.LOGIN, credentials);
-    const { accessToken, refreshToken, user } = response.data;
+    const { userId, username, role, accessToken, refreshToken } = response.data;
 
     localStorage.setItem(LocalStorageKeys.ACCESS_TOKEN, accessToken);
     localStorage.setItem(LocalStorageKeys.REFRESH_TOKEN, refreshToken);
-    localStorage.setItem(LocalStorageKeys.USER_INFO, JSON.stringify(user));
+    localStorage.setItem(
+      LocalStorageKeys.USER_INFO,
+      JSON.stringify({ userId, username, role })
+    );
 
     return response.data;
   } catch (error) {
@@ -79,4 +82,12 @@ export function changePassword(payload) {
     console.error("Change password failed:", error);
     throw error;
   }
+}
+
+export function getUserInfo() {
+  const userInfo = localStorage.getItem(LocalStorageKeys.USER_INFO);
+  if (userInfo) {
+    return JSON.parse(userInfo);
+  }
+  return null;
 }
