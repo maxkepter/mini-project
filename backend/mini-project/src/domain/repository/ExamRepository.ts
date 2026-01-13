@@ -3,7 +3,7 @@ import { Repository, DataSource } from 'typeorm';
 import { Exam } from '../entities/Exam.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IRepository } from './IRepository';
-import { ExamSummaryResponse } from 'src/service/dto/response/examSumary.respone';
+import { ExamSummaryResponse } from 'src/modules/exam/dtos.response';
 
 @Injectable()
 export class ExamRepository implements IRepository<Exam> {
@@ -37,12 +37,18 @@ export class ExamRepository implements IRepository<Exam> {
   }
 
   async update(id: number, item: Partial<Exam>): Promise<Exam | null> {
-    await this.repository.update(id, item);
-    return await this.findById(id);
+    const existing = await this.findById(id);
+    if (!existing) {
+      return null;
+    }
+    // Merge changes into existing entity
+    Object.assign(existing, item);
+    // Use save() instead of update() to handle relations
+    return await this.repository.save(existing);
   }
 
   async delete(id: number): Promise<boolean> {
-    const result = await this.repository.delete(id);
+    const result = await this.repository.softDelete(id);
     return (result.affected ?? 0) > 0;
   }
 
@@ -51,7 +57,9 @@ export class ExamRepository implements IRepository<Exam> {
     return count > 0;
   }
 
-  async getAllExams(): Promise<ExamSummaryResponse[]> {
-    return await this.dataSource.query('EXEC sp_get_all_exams');
+  async getExamsByName(name: string): Promise<ExamSummaryResponse[]> {
+    return await this.dataSource.query('EXEC sp_get_exams @examName = @0', [
+      name,
+    ]);
   }
 }

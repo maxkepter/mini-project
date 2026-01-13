@@ -16,6 +16,7 @@ import {
 } from 'src/domain/repository';
 import { StudentExamController } from './student-exam.controller';
 import { StudentExamService } from './student-exam.service';
+import { AdminStudentExamController } from './admin.student-exam.controller';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { StudentExamService } from './student-exam.service';
       User,
     ]),
   ],
-  controllers: [StudentExamController],
+  controllers: [StudentExamController, AdminStudentExamController],
   providers: [
     StudentExamService,
     StudentExamRepository,

@@ -17,7 +17,7 @@ export class Question {
   @Column({ type: 'varchar', length: 1000 })
   content: string;
 
-  @OneToMany(() => Option, (option) => option.question)
+  @OneToMany(() => Option, (option) => option.question, { cascade: true })
   options: Option[];
 
   @DeleteDateColumn({ type: 'datetime', nullable: true })

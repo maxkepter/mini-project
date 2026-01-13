@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { StudentExam } from '../entities/StudentExam.entity';
 import { IRepository } from './IRepository';
-import { StudentExamSummaryResponse } from 'src/service/dto/response/studentExamSumary.response';
+import { StudentExamSummaryResponse } from 'src/modules/student-exam/dtos.response';
 
 @Injectable()
 export class StudentExamRepository implements IRepository<StudentExam> {
@@ -28,8 +28,14 @@ export class StudentExamRepository implements IRepository<StudentExam> {
 
   async findByUserId(userId: number): Promise<StudentExamSummaryResponse[]> {
     return await this.dataSource.query(
-      'EXEC sp_get_exam_history @UserId = @0',
+      'EXEC dbo.sp_get_student_exams_by_user @userId = @0',
       [userId],
+    );
+  }
+  async findByExamId(examId: number): Promise<StudentExamSummaryResponse[]> {
+    return await this.dataSource.query(
+      'EXEC dbo.sp_get_student_exams_by_exam @examId = @0',
+      [examId],
     );
   }
 

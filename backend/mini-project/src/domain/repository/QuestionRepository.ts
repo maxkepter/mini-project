@@ -20,7 +20,7 @@ export class QuestionRepository implements IRepository<Question> {
   async findById(id: number): Promise<Question | null> {
     return await this.repository.findOne({
       where: { questionId: id },
-      relations: ['options', 'questionExams'],
+      relations: ['options'],
     });
   }
 
@@ -46,8 +46,14 @@ export class QuestionRepository implements IRepository<Question> {
   }
 
   async update(id: number, item: Partial<Question>): Promise<Question | null> {
-    await this.repository.update(id, item);
-    return await this.findById(id);
+    const existing = await this.findById(id);
+    if (!existing) {
+      return null;
+    }
+    // Merge changes into existing entity
+    Object.assign(existing, item);
+    // Use save() instead of update() to handle relations
+    return await this.repository.save(existing);
   }
 
   //soft delete

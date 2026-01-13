@@ -31,7 +31,7 @@ export class Exam {
   @OneToMany(() => StudentExam, (studentExam) => studentExam.exam)
   studentExams: StudentExam[];
 
-  @ManyToMany(() => Question, (question) => question.exams)
+  @ManyToMany(() => Question, (question) => question.exams, { cascade: true })
   @JoinTable({
     name: 'ExamQuestion',
     joinColumn: { name: 'examId', referencedColumnName: 'examId' },

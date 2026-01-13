@@ -2,6 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class StudentExamSummaryResponse {
   @ApiProperty({ example: 1 })
+  studentExamId: number;
+  @ApiProperty({ example: 1 })
+  userId: number;
+  @ApiProperty({ example: 'John Doe' })
+  userName: string;
+  @ApiProperty({ example: 1 })
   examName: string;
   @ApiProperty({ example: new Date() })
   startTime: Date;

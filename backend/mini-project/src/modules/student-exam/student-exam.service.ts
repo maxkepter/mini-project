@@ -20,7 +20,7 @@ import { StudentExamMapper } from '../../service/mapper/studentExam.mapper';
 import { SelectOptionRequest } from '../../service/dto/request/selectOption.request';
 import { StudentExamSelectionRequest } from '../../service/dto/request/studentExamSelection.request';
 import { Injectable } from '@nestjs/common';
-import { StudentExamSummaryResponse } from '../../service/dto/response/studentExamSumary.response';
+import { StudentExamSummaryResponse } from './dtos.response';
 
 @Injectable()
 export class StudentExamService {
@@ -69,6 +69,12 @@ export class StudentExamService {
     userId: number,
   ): Promise<StudentExamSummaryResponse[]> {
     return await this.studentExanmRepo.findByUserId(userId);
+  }
+
+  async getStudentExamByExamId(
+    examId: number,
+  ): Promise<StudentExamSummaryResponse[]> {
+    return await this.studentExanmRepo.findByExamId(examId);
   }
 
   async selectOption(request: SelectOptionRequest): Promise<void> {

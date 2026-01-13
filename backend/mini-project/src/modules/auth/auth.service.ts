@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { UserRepository } from 'src/domain/repository';
-import { AuthRequest } from '../../service/dto/request/auth.request';
 import {
   BadRequestException,
   ConflictException,
@@ -8,9 +9,9 @@ import {
 import { User } from 'src/domain/entities/User.entity';
 import { UserRole } from 'src/domain/enum/UserRole.enum';
 import { sha256 } from 'src/utils/hash.utils';
-import { UpdatePasswordRequest } from '../../service/dto/request/updatePassword.request';
 import { TokenService } from './token.service';
 import { AuthResponse } from './dtos.response';
+import { AuthRequest, UpdatePasswordRequest } from './dtos.request';
 
 @Injectable()
 export class AuthService {
@@ -37,6 +38,11 @@ export class AuthService {
     if (user?.password !== sha256(request.password)) {
       throw new BadRequestException('Invalid username or password');
     }
+
+    if (!user.isActive) {
+      throw new BadRequestException('User account is deactivated');
+    }
+
     const payload: AuthResponse = {
       userId: user.userId,
       username: user.username,

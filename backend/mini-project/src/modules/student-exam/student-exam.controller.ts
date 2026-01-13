@@ -1,13 +1,32 @@
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  Param,
+  Req,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
+import type { Request } from 'express';
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    userId: number;
+  };
+}
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SelectOptionRequest } from 'src/service/dto/request/selectOption.request';
 import { StudentExamCreationRequest } from 'src/service/dto/request/studentExamCreation.request';
 import { StudentExamResponse } from 'src/service/dto/response/studentExam.response';
-import { StudentExamSummaryResponse } from 'src/service/dto/response/studentExamSumary.response';
 import { StudentExamService } from 'src/modules/student-exam/student-exam.service';
+import { JwtGuard } from '../auth/jwt.guard';
+import { StudentExamSummaryResponse } from './dtos.response';
 
 @ApiTags('Student Exams')
 @Controller('api/student/exams')
+@UseGuards(JwtGuard)
 export class StudentExamController {
   constructor(private readonly studentExamService: StudentExamService) {}
   @Post('take-exam')
@@ -23,7 +42,7 @@ export class StudentExamController {
   @ApiOperation({ summary: 'Get a student exam by ID' })
   @ApiResponse({ status: 200, type: StudentExamResponse })
   async getStudentExamById(
-    @Body('studentExamId') studentExamId: number,
+    @Param('id') studentExamId: number,
   ): Promise<StudentExamResponse | null> {
     return await this.studentExamService.getStudentExamById(studentExamId);
   }
@@ -39,14 +58,20 @@ export class StudentExamController {
   @ApiOperation({ summary: 'Get exam history for a student' })
   @ApiResponse({ status: 200, type: [StudentExamSummaryResponse] })
   async getExamHistory(
-    @Body('userId') userId: number,
+    @Req() req: AuthenticatedRequest,
   ): Promise<StudentExamSummaryResponse[]> {
+    if (!req.user?.userId) {
+      throw new BadRequestException('User information not found in request');
+    }
+    const userId = req.user.userId;
     return await this.studentExamService.getStudentExamByUserId(userId);
   }
   @Put('submit')
   @ApiOperation({ summary: 'Submit a student exam' })
   @ApiResponse({ status: 200, type: StudentExamResponse })
-  async submitExam(studentExamId: number): Promise<StudentExamResponse> {
+  async submitExam(
+    @Body('studentExamId') studentExamId: number,
+  ): Promise<StudentExamResponse> {
     return await this.studentExamService.submitExam(studentExamId);
   }
 }

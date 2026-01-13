@@ -1,9 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from 'src/modules/auth/auth.service';
-import { AuthRequest } from 'src/service/dto/request/auth.request';
-import { UpdatePasswordRequest } from 'src/service/dto/request/updatePassword.request';
-import { RefreshTokenRequest } from './dtos.request';
+import {
+  AuthRequest,
+  RefreshTokenRequest,
+  UpdatePasswordRequest,
+} from './dtos.request';
 import { TokenService } from './token.service';
 import { AuthResponse } from './dtos.response';
 
