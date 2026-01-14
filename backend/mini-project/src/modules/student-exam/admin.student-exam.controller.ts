@@ -1,6 +1,11 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { StudentExamService } from './student-exam.service';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtGuard } from '../auth/jwt.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -11,6 +16,7 @@ import { StudentExamSummaryResponse } from './dtos.response';
 @ApiTags('Admin Student Exams')
 @UseGuards(JwtGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
+@ApiBearerAuth()
 export class AdminStudentExamController {
   constructor(private readonly studentExamService: StudentExamService) {}
   @Get(':examId')

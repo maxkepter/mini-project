@@ -1,7 +1,5 @@
 import {
   ExamRepository,
-  StudentExamAnswerRepository,
-  StudentExamQuestionRepository,
   StudentExamRepository,
   UserRepository,
 } from 'src/domain/repository';
@@ -17,7 +15,6 @@ import { shuffleArray } from 'src/utils/array.utils';
 import { StudentExamStatus } from 'src/domain/enum';
 import { StudentExamResponse } from '../../service/dto/response/studentExam.response';
 import { StudentExamMapper } from '../../service/mapper/studentExam.mapper';
-import { SelectOptionRequest } from '../../service/dto/request/selectOption.request';
 import { StudentExamSelectionRequest } from '../../service/dto/request/studentExamSelection.request';
 import { Injectable } from '@nestjs/common';
 import { StudentExamSummaryResponse } from './dtos.response';
@@ -28,8 +25,6 @@ export class StudentExamService {
     private readonly examRepo: ExamRepository,
     private readonly userRepo: UserRepository,
     private readonly studentExanmRepo: StudentExamRepository,
-    private readonly studentExamQuestionRepo: StudentExamQuestionRepository,
-    private readonly studentExamAnswerRepo: StudentExamAnswerRepository,
   ) {}
   async createStudentExam(
     request: StudentExamCreationRequest,
@@ -55,12 +50,35 @@ export class StudentExamService {
     return StudentExamMapper.toResponse(studentExam);
   }
 
+  async takeExam(
+    request: StudentExamCreationRequest,
+  ): Promise<StudentExamResponse> {
+    const inprogressExam = await this.getInprogressExam(request.userId);
+    if (inprogressExam) {
+      return StudentExamMapper.toResponse(inprogressExam, true);
+    }
+    return this.createStudentExam(request);
+  }
+
+  private async getInprogressExam(userId: number): Promise<StudentExam | null> {
+    return await this.studentExanmRepo.findByUserAndStatus(
+      userId,
+      StudentExamStatus.IN_PROGRESS,
+    );
+  }
+
   async getStudentExamById(
     studentExamId: number,
+    userId?: number,
+    userRole?: number,
   ): Promise<StudentExamResponse | null> {
     const studentExam = await this.studentExanmRepo.findById(studentExamId);
     if (!studentExam) {
       return null;
+    }
+    // Admin có thể xem tất cả, student chỉ xem được bài thi của mình
+    if (userRole !== 0 && studentExam.userId !== userId) {
+      throw new Error('Unauthorized: You can only view your own exam');
     }
     return StudentExamMapper.toResponse(studentExam);
   }
@@ -68,7 +86,8 @@ export class StudentExamService {
   async getStudentExamByUserId(
     userId: number,
   ): Promise<StudentExamSummaryResponse[]> {
-    return await this.studentExanmRepo.findByUserId(userId);
+    const res = await this.studentExanmRepo.findByUserId(userId);
+    return res;
   }
 
   async getStudentExamByExamId(
@@ -77,18 +96,8 @@ export class StudentExamService {
     return await this.studentExanmRepo.findByExamId(examId);
   }
 
-  async selectOption(request: SelectOptionRequest): Promise<void> {
-    const answer = await this.studentExamAnswerRepo.findById(request.optionId);
-    if (!answer) {
-      throw new Error('Student exam answer does not exist');
-    }
-    await this.studentExamAnswerRepo.update(answer.studentExamAnswerId, {
-      ...answer,
-      isSelected: request.isSelected,
-    });
-  }
-
   async selectOptions(request: StudentExamSelectionRequest): Promise<void> {
+    console.log('SelectOptions Request:', request);
     const studentExam = await this.studentExanmRepo.findById(
       request.studentExamId,
     );
@@ -96,21 +105,8 @@ export class StudentExamService {
       throw new Error('Student exam does not exist');
     }
 
-    for (const selection of request.selections) {
-      const answer = await this.studentExamAnswerRepo.findById(
-        selection.studentExamAnswerId,
-      );
-      if (!answer) {
-        throw new Error(
-          `Student exam answer ${selection.studentExamAnswerId} does not exist`,
-        );
-      }
-
-      await this.studentExamAnswerRepo.update(answer.studentExamAnswerId, {
-        ...answer,
-        isSelected: selection.isSelected,
-      });
-    }
+    studentExam.updateSelectedOptions(request.selections);
+    await this.studentExanmRepo.update(studentExam.studentExamId, studentExam);
   }
 
   async submitExam(studentExamId: number): Promise<StudentExamResponse> {
@@ -118,11 +114,8 @@ export class StudentExamService {
     if (!studentExam) {
       throw new Error('Student exam does not exist');
     }
-    const score = this.calculateScore(studentExam);
 
-    studentExam.score = score;
-    studentExam.status = StudentExamStatus.SUBMITTED;
-    studentExam.submitTime = new Date();
+    studentExam.submit();
     await this.studentExanmRepo.update(studentExam.studentExamId, studentExam);
     return StudentExamMapper.toResponse(studentExam);
   }
@@ -147,16 +140,5 @@ export class StudentExamService {
     studentExamAnswer.isCorrect = option.isCorrect;
     studentExamAnswer.isSelected = false;
     return studentExamAnswer;
-  }
-
-  private calculateScore(studentExam: StudentExam): number {
-    const totalQuestions = studentExam.studentExamQuestions.length;
-    let correctAnswers = 0;
-    for (const question of studentExam.studentExamQuestions) {
-      if (question.isQuestionCorrect()) {
-        correctAnswers++;
-      }
-    }
-    return (correctAnswers / totalQuestions) * 100;
   }
 }

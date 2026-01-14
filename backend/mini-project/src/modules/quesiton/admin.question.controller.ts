@@ -8,7 +8,12 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { QuestionService } from 'src/modules/quesiton/question.service';
 import { QuestionRequest } from 'src/service/dto/request/createQuestion.request';
 import { JwtGuard } from '../auth/jwt.guard';
@@ -20,6 +25,7 @@ import { UserRole } from 'src/domain/enum/UserRole.enum';
 @Controller('api/admin/questions')
 @UseGuards(JwtGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
+@ApiBearerAuth()
 export class AdminQuestionController {
   constructor(private readonly questionService: QuestionService) {}
   @Post()

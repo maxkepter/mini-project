@@ -1,11 +1,23 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ExamService } from 'src/modules/exam/exam.service';
 import { ExamResponse } from 'src/service/dto/response/exam.respone';
 import { ExamSummaryResponse } from './dtos.response';
+import { JwtGuard } from '../auth/jwt.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { UserRole } from 'src/domain/enum/UserRole.enum';
 
 @ApiTags('User Exams')
 @Controller('api/user/exams')
+@UseGuards(JwtGuard, RolesGuard)
+@Roles(UserRole.STUDENT, UserRole.ADMIN)
+@ApiBearerAuth()
 export class UserExamController {
   constructor(private readonly examService: ExamService) {}
 

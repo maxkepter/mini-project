@@ -9,7 +9,12 @@ import {
 } from '@nestjs/common';
 import { ExamService } from 'src/modules/exam/exam.service';
 import { CreateExamRequest } from 'src/service/dto/request/createExam.request';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { JwtGuard } from '../auth/jwt.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -19,6 +24,7 @@ import { UserRole } from 'src/domain/enum/UserRole.enum';
 @Controller('api/admin/exams')
 @UseGuards(JwtGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
+@ApiBearerAuth()
 export class AdminExamController {
   constructor(private readonly examService: ExamService) {}
   @Post()
