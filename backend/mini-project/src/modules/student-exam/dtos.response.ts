@@ -8,6 +8,8 @@ export class StudentExamSummaryResponse {
   @ApiProperty({ example: 'John Doe' })
   userName: string;
   @ApiProperty({ example: 1 })
+  examId: number;
+  @ApiProperty({ example: 'Math Exam 101' })
   examName: string;
   @ApiProperty({ example: new Date() })
   startTime: Date;

@@ -65,4 +65,47 @@ export class StudentExam {
     studentExam.studentExamQuestions = studentExamQuestions;
     return studentExam;
   }
+
+  updateSelectedOptions(
+    selections: Array<{ studentExamAnswerId: number; isSelected: boolean }>,
+  ): void {
+    for (const selection of selections) {
+      let found = false;
+      for (const question of this.studentExamQuestions) {
+        for (const answer of question.studentExamAnswers) {
+          if (answer.studentExamAnswerId === selection.studentExamAnswerId) {
+            answer.isSelected = selection.isSelected;
+            found = true;
+            break;
+          }
+        }
+        if (found) break;
+      }
+      if (!found) {
+        throw new Error(
+          `Student exam answer ${selection.studentExamAnswerId} does not exist`,
+        );
+      }
+    }
+  }
+
+  submit(): void {
+    if (this.status === StudentExamStatus.SUBMITTED) {
+      throw new Error('Student exam has already been submitted');
+    }
+    this.score = this.calculateScore();
+    this.status = StudentExamStatus.SUBMITTED;
+    this.submitTime = new Date();
+  }
+
+  private calculateScore(): number {
+    const totalQuestions = this.studentExamQuestions.length;
+    let correctAnswers = 0;
+    for (const question of this.studentExamQuestions) {
+      if (question.isQuestionCorrect()) {
+        correctAnswers++;
+      }
+    }
+    return (correctAnswers / totalQuestions) * 100;
+  }
 }

@@ -4,6 +4,7 @@ import { StudentExamAnswerResponse } from '../dto/response/studentExamAnswer.res
 export class StudentExamAnswerMapper {
   static toResponse(entity: StudentExamAnswer): StudentExamAnswerResponse {
     const response = new StudentExamAnswerResponse();
+    response.studentExamAnswerId = entity.studentExamAnswerId;
     response.content = entity.content;
     response.isSelected = entity.isSelected;
     return response;

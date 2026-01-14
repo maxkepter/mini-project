@@ -30,6 +30,7 @@ export class StudentExamQuestion {
   @OneToMany(
     () => StudentExamAnswer,
     (studentExamAnswer) => studentExamAnswer.studentExamQuestion,
+    { cascade: true },
   )
   studentExamAnswers: StudentExamAnswer[];
 

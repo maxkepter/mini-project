@@ -20,9 +20,24 @@ export class StudentExamResponse {
   @ApiProperty({ example: 3 })
   userId: number;
 
+  @ApiProperty({ example: 'john_doe' })
+  username: string;
+
   @ApiProperty({ example: 1 })
   examId: number;
 
+  @ApiProperty({ example: 'Sample Exam Title' })
+  examName: string;
+
+  @ApiProperty({ example: 30, description: 'Duration in minutes' })
+  duration: number;
+
   @ApiProperty({ type: [StudentExamQuestionResponse] })
   studentExamQuestions: StudentExamQuestionResponse[];
+
+  @ApiProperty({
+    example: false,
+    description: 'True if this is a reloaded exam',
+  })
+  isReloaded: boolean;
 }

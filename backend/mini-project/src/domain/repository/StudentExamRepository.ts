@@ -9,7 +9,7 @@ import { StudentExamSummaryResponse } from 'src/modules/student-exam/dtos.respon
 export class StudentExamRepository implements IRepository<StudentExam> {
   constructor(
     @InjectRepository(StudentExam)
-    private repository: Repository<StudentExam>,
+    private readonly repository: Repository<StudentExam>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -22,7 +22,31 @@ export class StudentExamRepository implements IRepository<StudentExam> {
   async findById(id: number): Promise<StudentExam | null> {
     return await this.repository.findOne({
       where: { studentExamId: id },
-      relations: ['user', 'exam', 'studentExamQuestions'],
+      relations: [
+        'user',
+        'exam',
+        'exam.questions',
+        'exam.questions.options',
+        'studentExamQuestions',
+        'studentExamQuestions.studentExamAnswers',
+      ],
+    });
+  }
+
+  async findByUserAndStatus(
+    userId: number,
+    status: number,
+  ): Promise<StudentExam | null> {
+    return await this.repository.findOne({
+      where: { userId: userId, status: status },
+      relations: [
+        'user',
+        'exam',
+        'exam.questions',
+        'exam.questions.options',
+        'studentExamQuestions',
+        'studentExamQuestions.studentExamAnswers',
+      ],
     });
   }
 
@@ -48,8 +72,23 @@ export class StudentExamRepository implements IRepository<StudentExam> {
     id: number,
     item: Partial<StudentExam>,
   ): Promise<StudentExam | null> {
-    await this.repository.update(id, item);
-    return await this.findById(id);
+    const existingStudentExam = await this.findById(id);
+    if (!existingStudentExam) {
+      return null;
+    }
+
+    Object.assign(existingStudentExam, {
+      ...item,
+      studentExamId: id,
+    });
+
+    if (item.studentExamQuestions) {
+      existingStudentExam.studentExamQuestions = item.studentExamQuestions;
+    }
+
+    console.log('Updating StudentExam:', existingStudentExam);
+
+    return await this.repository.save(existingStudentExam);
   }
 
   async delete(id: number): Promise<boolean> {

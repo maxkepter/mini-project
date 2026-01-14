@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { StudentExamAnswer } from '../entities/StudentExamAnswer.entity';
 import { IRepository } from './IRepository';
 
@@ -20,6 +20,13 @@ export class StudentExamAnswerRepository implements IRepository<StudentExamAnswe
   async findById(id: number): Promise<StudentExamAnswer | null> {
     return await this.repository.findOne({
       where: { studentExamAnswerId: id },
+      relations: ['studentExamQuestion'],
+    });
+  }
+
+  async findByIds(ids: number[]): Promise<StudentExamAnswer[]> {
+    return await this.repository.find({
+      where: { studentExamAnswerId: In(ids) },
       relations: ['studentExamQuestion'],
     });
   }
