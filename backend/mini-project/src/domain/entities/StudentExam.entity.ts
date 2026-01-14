@@ -106,6 +106,6 @@ export class StudentExam {
         correctAnswers++;
       }
     }
-    return (correctAnswers / totalQuestions) * 100;
+    return Math.round((correctAnswers / totalQuestions) * 100);
   }
 }

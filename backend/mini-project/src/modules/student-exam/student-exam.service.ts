@@ -53,13 +53,26 @@ export class StudentExamService {
       throw new NotFoundException('Failed to create student exam');
     }
 
-    return StudentExamMapper.toResponse(createdExam);
+    // Fetch lại entity với relations để mapper lấy được username, examName, duration
+    const savedExamWithRelations = await this.studentExanmRepo.findById(
+      createdExam.studentExamId,
+    );
+
+    if (!savedExamWithRelations) {
+      throw new NotFoundException('Failed to fetch created student exam');
+    }
+
+    return StudentExamMapper.toResponse(savedExamWithRelations);
   }
 
   async takeExam(
     userId: number,
     request: StudentExamCreationRequest,
   ): Promise<StudentExamResponse> {
+    const inprogressExam = await this.getInprogressExam(userId);
+    if (inprogressExam) {
+      return StudentExamMapper.toResponse(inprogressExam);
+    }
     return this.createStudentExam(userId, request);
   }
 
