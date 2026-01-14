@@ -1,9 +1,16 @@
 <script>
+import { ADMIN_ROLE } from '~/const/role.const';
 import BaseModal from '~/components/BaseModal.vue';
 import { createQuestion, deleteQuestion, getAllQuestions, updateQuestion } from '~/services/question.service';
 
 export default {
     name: "AdminQuestionPage",
+    layout: 'admin',
+    middleware: 'auth',
+    meta: {
+        auth: true,
+        roles: [ADMIN_ROLE]
+    },
     components: { BaseModal },
     data() {
         return {
@@ -180,9 +187,9 @@ export default {
         <b-container>
             <b-row>
                 <h2>Create Question</h2>
-                <b-col>
-                    <b-button variant="primary" @click="showCreateModal">Create New Question</b-button>
-                    </b-col>
+                <b-col class="text-right mb-3 mt-3">
+                    <b-button variant="success" @click="showCreateModal"><i class="fas fa-plus-circle mr-2"></i>Create New Question</b-button>
+                </b-col>
 
             </b-row>
             <!-- List questions -->

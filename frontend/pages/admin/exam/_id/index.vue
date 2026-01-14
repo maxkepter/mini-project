@@ -1,10 +1,17 @@
 <script>
+import { ADMIN_ROLE } from '~/const/role.const';
 import BaseModal from '~/components/BaseModal.vue';
 import { getExamById, updateExam } from '~/services/exam.service';
 import { getAllQuestions } from '~/services/question.service';
 
 export default {
     name: "ExamDetailPage",
+    layout: 'admin',
+    middleware: 'auth',
+    meta: {
+        auth: true,
+        roles: [ADMIN_ROLE]
+    },
     components: {
         BaseModal
     },
@@ -212,7 +219,7 @@ export default {
                                         size="sm" 
                                         variant="outline-danger" 
                                         @click="selectedQuestionIds = selectedQuestionIds.filter(id => id !== question.questionId)">
-                                        <i class="fas fa-times">x</i>
+                                        <i class="fas fa-times"></i>
                                     </b-button>
                                 </div>
                                 <div>

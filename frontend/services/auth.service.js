@@ -25,7 +25,7 @@ export function logoutUser() {
 
   // Redirect to login if in browser
   if (process.browser) {
-    window.location.href = "/login";
+    window.location.href = "/auth/login";
   }
 }
 

@@ -1,9 +1,16 @@
 <script>
+import { ADMIN_ROLE } from '~/const/role.const';
 import { createExam } from '~/services/exam.service';
 import { getAllQuestions } from '~/services/question.service';
 
     export default {
         name: "AdminCreateExamPage",
+        layout: 'admin',
+        middleware: 'auth',
+        meta: {
+            auth: true,
+            roles: [ADMIN_ROLE]
+        },
         data() {
             return {
                 title: "Create Exam",

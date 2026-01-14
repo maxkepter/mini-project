@@ -1,5 +1,6 @@
 import { LocalStorageKeys } from "../const/local-storage.const";
 import { Urls } from "../const/url.const";
+import { logoutUser } from "../services/auth.service";
 
 let isRefreshing = false;
 let failedQueue = [];
@@ -29,14 +30,8 @@ function processQueue(error, token = null) {
   failedQueue = [];
 }
 
-function logoutUser() {
-  localStorage.removeItem(LocalStorageKeys.ACCESS_TOKEN);
-  localStorage.removeItem(LocalStorageKeys.REFRESH_TOKEN);
-  localStorage.removeItem(LocalStorageKeys.USER_INFO);
-
-  if (process.browser) {
-    window.location.href = "/login";
-  }
+function handleLogout() {
+  logoutUser();
 }
 
 export default function ({ $axios: axiosInstance, redirect }) {
@@ -59,13 +54,13 @@ export default function ({ $axios: axiosInstance, redirect }) {
     if (error.response?.status === 401) {
       // Return if the request has already been retried
       if (originalRequest._retry) {
-        logoutUser();
+        handleLogout();
         return Promise.reject(error);
       }
 
       // Logout if the request was to refresh the token endpoint
       if (originalRequest.url?.includes(Urls.REFRESH_TOKEN)) {
-        logoutUser();
+        handleLogout();
         return Promise.reject(error);
       }
 
@@ -87,7 +82,7 @@ export default function ({ $axios: axiosInstance, redirect }) {
       );
 
       if (!storedRefreshToken) {
-        logoutUser();
+        handleLogout();
         isRefreshing = false;
         return Promise.reject(error);
       }
@@ -113,7 +108,7 @@ export default function ({ $axios: axiosInstance, redirect }) {
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        logoutUser();
+        handleLogout();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

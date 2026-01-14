@@ -1,8 +1,15 @@
 <script>
+import { ADMIN_ROLE } from '~/const/role.const';
 import { getExam, deleteExam } from '~/services/exam.service';
 
 export default {
     name: "AdminExamPage",
+    layout: 'admin',
+    middleware: 'auth',
+    meta: {
+        auth: true,
+        roles: [ADMIN_ROLE]
+    },
     data() {
         return {
             title: "Manage Exams",
@@ -66,25 +73,25 @@ export default {
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2>{{ title }}</h2>
                 <b-button variant="success" @click="goToCreateExam">
-                    <i class="fas fa-plus-circle mr-2"></i>Create New Exam
+                    <i class="fas fa-plus-circle mr-2"></i> Create New Exam
                 </b-button>
             </div>
 
             <!-- Search Bar -->
             <b-row class="mb-4">
-                <b-col cols="12" md="10">
+                <b-col cols="12" class="mb-2 " >
                     <b-form-input
                         v-model="searchQuery"
                         placeholder="Search exams by name..."
                         @keyup.enter="searchExams"
                     ></b-form-input>
                 </b-col>
-                <b-col cols="12" md="2" class="mt-2 mt-md-0">
+                <b-col cols="12" class="mt-2 mt-md-0 ">
                     <b-button variant="primary" @click="searchExams" class="mr-2">
-                        <i class="fas fa-search mr-2"></i>Search
+                        <i class="fas fa-search mr-2"></i> Search
                     </b-button>
                     <b-button variant="secondary" @click="resetFields">
-                        <i class="fas fa-redo mr-2"></i>Reset
+                        <i class="fas fa-redo mr-2"></i> Reset
                     </b-button>
                 </b-col>
             </b-row>
@@ -110,7 +117,7 @@ export default {
                 <h4 class="text-muted">No exams found</h4>
                 <p class="text-muted">Create your first exam to get started</p>
                 <b-button variant="success" @click="goToCreateExam">
-                    <i class="fas fa-plus-circle mr-2"></i>Create Exam
+                    <i class="fas fa-plus-circle mr-2"></i> Create Exam
                 </b-button>
             </div>
 
@@ -136,19 +143,19 @@ export default {
                                     variant="primary" 
                                     size="sm" 
                                     @click="viewDetails(exam.examId)">
-                                    <i class="fas fa-eye mr-2"></i>View Details
+                                    <i class="fas fa-eye mr-2"></i> View Details
                                 </b-button>
                                 <b-button 
                                     variant="info" 
                                     size="sm" 
                                     @click="viewStudentExam(exam.examId)">
-                                    <i class="fas fa-users mr-2"></i>Student Exams
+                                    <i class="fas fa-users mr-2"></i> Student Exams
                                 </b-button>
                                 <b-button 
                                     variant="danger" 
                                     size="sm" 
                                     @click="deleteExam(exam.examId)">
-                                    <i class="fas fa-trash mr-2"></i>Delete
+                                    <i class="fas fa-trash mr-2"></i> Delete
                                 </b-button>
                             </div>
                         </template>
