@@ -19,6 +19,7 @@ import { StudentExamSummaryResponse } from './dtos.response';
 @ApiBearerAuth()
 export class AdminStudentExamController {
   constructor(private readonly studentExamService: StudentExamService) {}
+
   @Get(':examId')
   @ApiOperation({ summary: 'Get student exams by exam id' })
   @ApiOkResponse({ type: [StudentExamSummaryResponse] })

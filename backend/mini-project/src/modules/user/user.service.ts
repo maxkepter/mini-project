@@ -78,19 +78,6 @@ export class UserService {
       if (userId === currentUserId) {
         throw new BadRequestException('Cannot change your own role');
       }
-
-      // Count active admins
-      const allUsers = await this.userRepository.findAll();
-      const adminCount = allUsers.filter(
-        (u) => u.role === UserRole.ADMIN && u.isActive,
-      ).length;
-
-      // At least one admin must remain
-      if (adminCount <= 1) {
-        throw new BadRequestException(
-          'Cannot change role: must have at least 1 active admin',
-        );
-      }
     }
 
     await this.userRepository.update(userId, { role: newRole });

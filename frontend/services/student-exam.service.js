@@ -36,7 +36,6 @@ export async function getExamHistory() {
   try {
     const $axios = getAxios();
     const response = await $axios.get(Urls.STUDENT_EXAMS_HISTORY);
-    console.log("Exam history response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to get exam history:", error);

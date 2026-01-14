@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Req,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from 'src/modules/user/user.service';
@@ -30,18 +31,21 @@ import { UpdateRoleRequest } from './dtos.request';
 @ApiBearerAuth()
 export class AdminUserController {
   constructor(private readonly userService: UserService) {}
+
   @Get()
   @ApiOperation({ summary: 'Get all users' })
   @ApiOkResponse({ type: [UserResponse] })
   async getAllUsers(): Promise<UserResponse[]> {
     return await this.userService.getAllUsers();
   }
+
   @Get('profile/:userId')
   @ApiOperation({ summary: 'Get user profile by ID' })
   @ApiOkResponse({ type: UserResponse })
   async getUserProfile(@Param('id') id: number): Promise<UserResponse> {
     return await this.userService.getUserProfile(id);
   }
+
   @Delete(':userId')
   @ApiOperation({ summary: 'Deactivate a user by ID' })
   @ApiResponse({ status: 204, description: 'User deactivated successfully' })
@@ -50,7 +54,7 @@ export class AdminUserController {
     @Req() req: any,
   ): Promise<void> {
     if (!req?.user?.userId) {
-      throw new Error('Unauthorized');
+      throw new UnauthorizedException('Unauthorized');
     }
     const currentUserId = req.user.userId;
     return await this.userService.deactivateUser(userId, currentUserId);
@@ -64,7 +68,7 @@ export class AdminUserController {
     @Req() req: any,
   ): Promise<UserResponse> {
     if (!req?.user?.userId) {
-      throw new Error('Unauthorized');
+      throw new UnauthorizedException('Unauthorized');
     }
     return await this.userService.activateUser(userId);
   }
@@ -78,7 +82,7 @@ export class AdminUserController {
     @Req() req: any,
   ): Promise<UserResponse> {
     if (!req?.user?.userId) {
-      throw new Error('Unauthorized');
+      throw new UnauthorizedException('Unauthorized');
     }
     const currentUserId = req.user.userId;
     return await this.userService.updateUserRole(

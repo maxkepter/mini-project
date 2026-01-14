@@ -41,13 +41,18 @@ import { StudentExamSelectionRequest } from 'src/service/dto/request/studentExam
 @ApiBearerAuth()
 export class StudentExamController {
   constructor(private readonly studentExamService: StudentExamService) {}
+
   @Post('take-exam')
   @ApiOperation({ summary: 'Start a student exam' })
   @ApiResponse({ status: 201, type: StudentExamResponse })
   async takeExam(
     @Body() request: StudentExamCreationRequest,
+    @Req() req: AuthenticatedRequest,
   ): Promise<StudentExamResponse> {
-    return await this.studentExamService.takeExam(request);
+    if (!req.user?.userId) {
+      throw new BadRequestException('User information not found in request');
+    }
+    return await this.studentExamService.takeExam(req.user.userId, request);
   }
 
   @Get('history')

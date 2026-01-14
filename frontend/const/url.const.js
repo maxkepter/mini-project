@@ -9,7 +9,7 @@ export const Urls = {
   USER_GET_PROFILE: "/user/profile",
   USER_EXAMS: "/user/exams",
   // Student Exam Endpoints
-  STUDENT_EXAM_TAKE_EXAM: "student/exams/take-exam",
+  STUDENT_EXAM_TAKE_EXAM: "/student/exams/take-exam",
   STUDENT_EXAMS: "/student/exams",
   STUDENT_EXAMS_SELECT: "/student/exams/select-option",
   STUDENT_EXAMS_HISTORY: "/student/exams/history",

@@ -31,10 +31,16 @@ export default {
     },
     computed: {
         timeLeft() {
-            if (!this.studentExam) return 0;
+            if (!this.studentExam || !this.studentExam.startTime) return 0;
+
             const startTime = new Date(this.studentExam.startTime).getTime();
-            const duration = this.studentExam.duration * 60 * 1000;
-            return Math.max(0, duration - (this.currentTime - startTime));
+            const durationMs = this.studentExam.duration * 60 * 1000;
+            const now = this.currentTime;
+
+            const diff = now - startTime;
+            const remaining = durationMs - diff;
+            console.log("Time left (ms):", remaining);
+            return Math.max(0, remaining);
         },
         formatTimeLeft() {
             const totalSeconds = Math.floor(this.timeLeft / 1000);
@@ -54,9 +60,9 @@ export default {
     },
     methods: {
         getStudentExam() {
-            console.log("Fetching student exam for examId:", this.examId);
-            takeExam({ userId:getUserInfo().userId,examId: this.examId }).then((response) => {
+            takeExam({ examId: this.examId }).then((response) => {
                 console.log("Fetched student exam detail:", response);
+                                
                 this.studentExam = response;
                 this.questions = response.studentExamQuestions || [];
                 
@@ -79,10 +85,10 @@ export default {
                 }
                 
                 this.startTimeCounter();
+                this.loading = false;
             }).catch((error) => {
                 console.error("Error fetching student exam detail:", error);
                 this.errorMessage = "Failed to load student exam detail.";
-            }).finally(() => {
                 this.loading = false;
             });
         },

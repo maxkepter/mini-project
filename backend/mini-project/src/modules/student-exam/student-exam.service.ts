@@ -16,7 +16,7 @@ import { StudentExamStatus } from 'src/domain/enum';
 import { StudentExamResponse } from '../../service/dto/response/studentExam.response';
 import { StudentExamMapper } from '../../service/mapper/studentExam.mapper';
 import { StudentExamSelectionRequest } from '../../service/dto/request/studentExamSelection.request';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { StudentExamSummaryResponse } from './dtos.response';
 
 @Injectable()
@@ -27,37 +27,40 @@ export class StudentExamService {
     private readonly studentExanmRepo: StudentExamRepository,
   ) {}
   async createStudentExam(
+    userId: number,
     request: StudentExamCreationRequest,
   ): Promise<StudentExamResponse> {
     const exam = await this.examRepo.findById(request.examId);
     if (!exam) {
-      throw new Error('Exam does not exist');
+      throw new NotFoundException('Exam does not exist');
     }
-    if (!(await this.userRepo.exsits(request.userId))) {
-      throw new Error('User does not exist');
+    if (!(await this.userRepo.exsits(userId))) {
+      throw new NotFoundException('User does not exist');
     }
     const questions = exam.questions;
     const studentExamQuestions = shuffleArray(
       questions.map((question) => this.convertToStudentExamQuestions(question)),
     );
     const studentExam = StudentExam.create(
-      request.userId,
+      userId,
       exam.examId,
       StudentExamStatus.IN_PROGRESS,
       studentExamQuestions,
     );
-    await this.studentExanmRepo.create(studentExam);
-    return StudentExamMapper.toResponse(studentExam);
+    const createdExam = await this.studentExanmRepo.create(studentExam);
+
+    if (!createdExam || !createdExam.studentExamId) {
+      throw new NotFoundException('Failed to create student exam');
+    }
+
+    return StudentExamMapper.toResponse(createdExam);
   }
 
   async takeExam(
+    userId: number,
     request: StudentExamCreationRequest,
   ): Promise<StudentExamResponse> {
-    const inprogressExam = await this.getInprogressExam(request.userId);
-    if (inprogressExam) {
-      return StudentExamMapper.toResponse(inprogressExam, true);
-    }
-    return this.createStudentExam(request);
+    return this.createStudentExam(userId, request);
   }
 
   private async getInprogressExam(userId: number): Promise<StudentExam | null> {

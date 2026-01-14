@@ -21,6 +21,7 @@ export class QuestionService {
     );
     console.log('Created Question Entity:', question.options);
     const savedQuestion = await this.questionRepo.create(question);
+    // Map to response
     const response: QuestionResponse = new QuestionResponse();
     response.questionId = savedQuestion.questionId;
     response.content = savedQuestion.content;

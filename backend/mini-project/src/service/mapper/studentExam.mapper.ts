@@ -17,7 +17,6 @@ export class StudentExamMapper {
     response.examId = entity.examId;
     response.username = entity.user?.username || '';
     response.examName = entity.exam?.name || '';
-
     response.duration = entity.exam?.duration || 0;
     response.studentExamQuestions = (entity.studentExamQuestions || []).map(
       (question) => StudentExamQuestionMapper.toResponse(question),

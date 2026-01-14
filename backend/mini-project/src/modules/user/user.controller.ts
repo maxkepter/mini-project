@@ -16,6 +16,7 @@ import { UserService } from './user.service';
 @ApiBearerAuth()
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
   @Get('profile')
   @ApiOperation({ summary: 'Get student profile' })
   @ApiOkResponse({ type: UserResponse })
