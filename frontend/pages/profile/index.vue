@@ -4,6 +4,17 @@ import { getUserProfile } from '~/services/user.service';
 
 export default {
   name: "ProfilePage",
+  layout: 'profile',
+  middleware: 'auth',
+  meta: {
+    auth: true,
+    roles: [ADMIN_ROLE, USER_ROLE]
+  },
+  middleware: 'auth',
+  meta: {
+    auth: true,
+    roles: [0, 1] // Both ADMIN and USER
+  },
   data() {
     return {
       title: "Profile",

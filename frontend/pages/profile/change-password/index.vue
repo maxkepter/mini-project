@@ -1,10 +1,17 @@
 <script>
+import { ADMIN_ROLE, USER_ROLE } from '~/const/role.const';
 import { LocalStorageKeys } from "~/const/local-storage.const";
 import { changePassword } from "../../../services/auth.service";
 import BaseModal from "~/components/BaseModal.vue";
 
 export default {
-    name: "ChangePasswordPage",
+    name: 'ChangePasswordPage',
+    layout: 'profile',
+    middleware: 'auth',
+    meta: {
+        auth: true,
+        roles: [ADMIN_ROLE, USER_ROLE]
+    },
     components: { BaseModal },
     data() {
         return {
@@ -82,7 +89,7 @@ export default {
                 <b-col md="6">
                     <h2 class="mb-4 text-center">{{ title }}</h2>
                     <b-form @submit.prevent="handleChangePassword">
-                        <b-form-group label="Current Password" label-for="current-password">
+                        <b-form-group label="Current Password" label-for="current-password" class="mb-3">
                             <b-form-input
                                 id="current-password"
                                 type="password"
@@ -91,7 +98,7 @@ export default {
                             ></b-form-input>
                         </b-form-group>
 
-                        <b-form-group label="New Password" label-for="new-password">
+                        <b-form-group label="New Password" label-for="new-password" class="mb-3">
                             <b-form-input
                                 id="new-password"
                                 type="password"
@@ -100,7 +107,7 @@ export default {
                             ></b-form-input>
                         </b-form-group>
 
-                        <b-form-group label="Confirm New Password" label-for="confirm-new-password">
+                        <b-form-group label="Confirm New Password" label-for="confirm-new-password" class="mb-3">
                             <b-form-input
                                 id="confirm-new-password"
                                 type="password"

@@ -1,8 +1,0 @@
-- view exam
-+ phân trang
-+ tìm theo tên
-- view exam history
-+ phân trang, 
-- view student exam detail
-- take exam 
-+ 

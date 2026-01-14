@@ -1,4 +1,0 @@
-x- login 
-x- register
-x- view profile 
-+ có update password

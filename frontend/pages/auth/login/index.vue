@@ -1,6 +1,8 @@
 <script>
 import { Urls } from "../../../const/url.const";
 import { loginUser } from "../../../services/auth.service";
+import { ADMIN_ROLE, USER_ROLE } from "../../../const/role.const";
+import { LocalStorageKeys } from "../../../const/local-storage.const";
 
 export default {
   name: "LoginPage",
@@ -25,7 +27,27 @@ export default {
         .then((response) => {
           console.log("Login successful:", response);
           this.erorrMessage = "";
-          this.$router.push({ path: Urls.HOME });
+          
+          // Get user role from localStorage after login
+          const userInfo = localStorage.getItem(LocalStorageKeys.USER_INFO);
+          if (userInfo) {
+            const info = JSON.parse(userInfo);
+            console.log("User role after login:", info.role);
+            
+            // Add small delay to ensure localStorage is synced
+            setTimeout(() => {
+              // Redirect based on role
+              if (info.role === ADMIN_ROLE) {
+                this.$router.push({ path: '/admin' });
+              } else if (info.role === USER_ROLE) {
+                this.$router.push({ path: Urls.HOME });
+              } else {
+                this.$router.push({ path: Urls.HOME });
+              }
+            }, 100);
+          } else {
+            this.$router.push({ path: Urls.HOME });
+          }
         })
         .catch((error) => {
           console.error("Login failed:", error);

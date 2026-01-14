@@ -1,10 +1,17 @@
 <script>
+import { ADMIN_ROLE } from '~/const/role.const';
 import { activeUser, deactivateUser, getAllUser, updateUserRole } from '~/services/user.service';
-import { ADMIN_ROLE, USER_ROLE } from '~/const/role.const';
+import { USER_ROLE } from '~/const/role.const';
 import { getUserInfo } from '~/services/auth.service';
 
 export default{
     name: "UserAdminPage",
+    layout: 'admin',
+    middleware: 'auth',
+    meta: {
+        auth: true,
+        roles: [ADMIN_ROLE]
+    },
     data(){
         return{
             title: "User Management",
