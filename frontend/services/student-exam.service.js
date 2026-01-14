@@ -1,6 +1,7 @@
 import { getAxios } from "@/plugins/axios";
 import { Urls } from "@/const/url.const.js";
 export async function takeExam(payload) {
+  console.log("Taking exam with payload:", payload);
   try {
     const $axios = getAxios();
     const response = await $axios.post(Urls.STUDENT_EXAM_TAKE_EXAM, payload);
@@ -63,6 +64,28 @@ export async function submitExam(studentExamId) {
     return response.data;
   } catch (error) {
     console.error("Failed to submit exam:", error);
+    throw error;
+  }
+}
+
+export async function saveAndSubmitExam(studentExamId, selections) {
+  try {
+    // Save answers first
+    const payload = {
+      studentExamId: studentExamId,
+      selections: selections
+    };
+    console.log("Saving exam answers:", payload);
+    await saveOption(payload);
+    console.log("Exam answers saved successfully");
+    
+    // Then submit exam
+    console.log("Submitting exam:", studentExamId);
+    const response = await submitExam(studentExamId);
+    console.log("Exam submitted successfully:", response);
+    return response;
+  } catch (error) {
+    console.error("Failed to save and submit exam:", error);
     throw error;
   }
 }

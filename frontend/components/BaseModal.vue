@@ -43,7 +43,7 @@ export default {
             <slot name="header">
               <div class="modal-header">
                 <h5 class="modal-title">Modal Title</h5>
-                <button type="button" class="btn-close" @click="close"></button>
+                <button type="button" class="btn-close" aria-label="Close" @click="close"></button>
               </div>
             </slot>
 
@@ -135,6 +135,7 @@ export default {
   justify-content: space-between;
   padding: 1rem;
   border-bottom: 1px solid #dee2e6;
+  position: relative;
 }
 
 .modal-title {
@@ -145,20 +146,30 @@ export default {
 }
 
 .btn-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
   box-sizing: content-box;
   width: 1em;
   height: 1em;
-  padding: 0.25em 0.25em;
+  padding: 0.5em;
   color: #000;
   background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 111.414 1.414L1.414 2.12l.293.293a1 1 0 11-1.414 1.414L0 3.534.293.293zm16 16a1 1 0 01-1.414-1.414l-.293-.293a1 1 0 111.414-1.414l.293.293a1 1 0 011.414 1.414l-.293.293z'/%3e%3cpath d='M16 .293a1 1 0 00-1.414-1.414L14.293 0l-.293.293a1 1 0 00-1.414 1.414L12.586 2.12l-.293.293a1 1 0 001.414 1.414l.293-.293 1.414-1.414a1 1 0 00.293-.707V.293z'/%3e%3c/svg%3e") center / 1em auto no-repeat;
   border: 0;
   border-radius: 0.25rem;
   opacity: 0.5;
   cursor: pointer;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
 }
 
 .btn-close:hover {
   opacity: 0.75;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.btn-close:active {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .modal-body {

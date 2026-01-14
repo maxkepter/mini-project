@@ -1,7 +1,7 @@
 <script>
 import { USER_ROLE, ADMIN_ROLE } from '~/const/role.const';
 import { getUserInfo } from '~/services/auth.service';
-import { saveOption, submitExam, takeExam } from '~/services/student-exam.service';
+import { saveOption, submitExam, takeExam, saveAndSubmitExam } from '~/services/student-exam.service';
 
 export default {
     name: "TakeExamPage",
@@ -23,6 +23,7 @@ export default {
             questions: [],
             answers: {},
             isShowSubmitModal: false,
+            submitScore: null,
             autoSaveTime: 3 * 60 * 1000, // 3 minutes
             autoSaveInterval: null,
             timeInterval: null,
@@ -101,36 +102,29 @@ export default {
         handleSubmitExam() {
             if (confirm('Are you sure you want to submit this exam? You cannot change your answers after submission.')) {
                 this.isShowSubmitModal = true;
-                submitExam(this.studentExam.studentExamId).then((response) => {
-                    console.log("Submitted exam successfully:", response);
-                    alert('Exam submitted successfully!');
-                    this.$router.push('/exam/history');
-                }).catch((error) => {
-                    console.error("Error submitting exam:", error);
-                    this.errorMessage = "Failed to submit exam.";
-                    alert('Failed to submit exam. Please try again.');
-                }).finally(() => {
-                    this.isShowSubmitModal = false;
-                });
+                const selections = this.buildSelectionsPayload();
+                
+                saveAndSubmitExam(this.studentExam.studentExamId, selections)
+                    .then((response) => {
+                        this.submitScore = response.score;
+                    })
+                    .catch((error) => {
+                        console.error("Error submitting exam:", error);
+                        this.errorMessage = "Failed to submit exam.";
+                        alert('Failed to submit exam. Please try again.');
+                        this.isShowSubmitModal = false;
+                    });
             }
+        },
+        handleCloseScoreModal() {
+            this.isShowSubmitModal = false;
+            this.submitScore = null;
+            this.$router.push('/exam/history');
         },
         handleSaveExam() {
             if (!this.studentExam) return;
             
-            // Transform answers to selections format
-            const selections = [];
-            Object.keys(this.answers).forEach(questionId => {
-                const selectedAnswerIds = this.answers[questionId];
-                if (Array.isArray(selectedAnswerIds)) {
-                    selectedAnswerIds.forEach(answerId => {
-                        selections.push({
-                            studentExamAnswerId: answerId,
-                            isSelected: true
-                        });
-                    });
-                }
-            });
-            
+            const selections = this.buildSelectionsPayload();
             const payload = {
                 studentExamId: this.studentExam.studentExamId,
                 selections: selections
@@ -181,6 +175,21 @@ export default {
                 const hasAnswer = Array.isArray(answer) ? answer.length > 0 : !!answer;
                 return hasAnswer ? 'success' : 'secondary';
             }
+        },
+        buildSelectionsPayload() {
+            const selections = [];
+            Object.keys(this.answers).forEach(questionId => {
+                const selectedAnswerIds = this.answers[questionId];
+                if (Array.isArray(selectedAnswerIds)) {
+                    selectedAnswerIds.forEach(answerId => {
+                        selections.push({
+                            studentExamAnswerId: answerId,
+                            isSelected: true
+                        });
+                    });
+                }
+            });
+            return selections;
         }   
     },
     mounted() {
@@ -311,31 +320,16 @@ export default {
                             </div>
                         </b-card>
 
-                        <!-- Legend -->
-                        <b-card class="mb-3 shadow-sm">
-                            <h6 class="mb-3">Legend</h6>
-                            <div class="mb-2">
-                                <b-button variant="success" size="sm" disabled style="width: 30px; height: 30px;"></b-button>
-                                <span class="ml-2">Answered</span>
-                            </div>
-                            <div class="mb-2">
-                                <b-button variant="warning" size="sm" disabled style="width: 30px; height: 30px;"></b-button>
-                                <span class="ml-2">Marked</span>
-                            </div>
-                            <div>
-                                <b-button variant="secondary" size="sm" disabled style="width: 30px; height: 30px;"></b-button>
-                                <span class="ml-2">Not Answered</span>
-                            </div>
-                        </b-card>
-
                         <!-- Action Buttons -->
-                        <b-card class="shadow-sm">
-                            <b-button variant="danger" block @click="handleSaveExam" class="mb-2">
-                                <i class="fas fa-save mr-2"></i>Save Progress
+                        <b-card class="shadow-sm d-flex flex-column">
+                           <div> 
+                            <b-button variant="danger" block @click="handleSaveExam" class="col-12 mb-2">
+                              Save Progress
                             </b-button>
-                            <b-button variant="primary" block @click="handleSubmitExam">
-                                <i class="fas fa-paper-plane mr-2"></i>Submit Exam
-                            </b-button>
+                        </div>
+                            <div><b-button variant="primary" block @click="handleSubmitExam" class="col-12">
+                               Submit Exam
+                            </b-button></div>
                         </b-card>
                     </div>
                 </b-col>
@@ -343,10 +337,30 @@ export default {
         </b-container>
 
         <!-- Submit Modal -->
-        <b-modal v-model="isShowSubmitModal" title="Submitting Exam" hide-footer no-close-on-backdrop no-close-on-esc>
-            <div class="text-center py-4">
+        <b-modal 
+            v-model="isShowSubmitModal" 
+            :title="submitScore !== null ? 'Exam Submitted Successfully' : 'Submitting Exam'" 
+            hide-footer 
+            no-close-on-backdrop 
+            no-close-on-esc
+        >
+            <div v-if="submitScore === null" class="text-center py-4">
                 <b-spinner variant="primary" style="width: 3rem; height: 3rem;"></b-spinner>
                 <p class="mt-3">Please wait while we submit your exam...</p>
+            </div>
+            <div v-else class="text-center py-4">
+                <div style="font-size: 3rem; color: #28a745; margin-bottom: 1rem;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h4 class="mb-3">Congratulations!</h4>
+                <p class="text-muted mb-4">Your exam has been submitted successfully.</p>
+                <div class="score-display mb-4">
+                    <p class="text-muted mb-1">Your Score</p>
+                    <h2 style="color: #0d6efd; font-weight: bold;">{{ submitScore }} / 100</h2>
+                </div>
+                <b-button variant="primary" block @click="handleCloseScoreModal">
+                    <i class="fas fa-arrow-right mr-2"></i>View Results
+                </b-button>
             </div>
         </b-modal>
     </main>

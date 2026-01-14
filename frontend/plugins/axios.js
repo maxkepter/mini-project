@@ -47,16 +47,6 @@ export default function ({ $axios: axiosInstance, redirect }) {
     return config;
   });
 
-  // Response interceptor to log response
-  axiosInstance.onResponse((response) => {
-    console.log("Axios onResponse interceptor:", {
-      url: response.config.url,
-      status: response.status,
-      data: response.data
-    });
-    return response;
-  });
-
   // Response interceptor to handle 401 and refresh token
   axiosInstance.onError(async (error) => {
     const originalRequest = error.config;
