@@ -10,7 +10,7 @@
 <script>
 import ProfileSidebar from '~/components/ProfileSidebar.vue';
 import { mapGetters } from 'vuex';
-import { ADMIN_ROLE } from '~/const/role.const';
+import { ADMIN_ROLE, SUB_ADMIN_ROLE } from '~/const/role.const';
 
 export default {
     name: 'ProfileLayout',
@@ -20,7 +20,8 @@ export default {
     data() {
         return {
             userRole: null,
-            ADMIN_ROLE
+            ADMIN_ROLE,
+            SUB_ADMIN_ROLE
         };
     },
     computed: {

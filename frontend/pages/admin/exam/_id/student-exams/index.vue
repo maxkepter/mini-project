@@ -1,14 +1,9 @@
 <script>
-import { ADMIN_ROLE } from '~/const/role.const';
+import { ADMIN_ROLE, SUB_ADMIN_ROLE } from '~/const/role.const';
 import { STATUS_ENUM } from '~/const/student-exam-status.enum';
+import { STATUS_VARIANT, STATUS_COLOR_MAP, SCORE_PASS_THRESHOLD } from '~/const/status-variant.const';
 import { getStudentExamByExamId } from '~/services/student-exam.service';
-
-const STATUS_VARIANT = {
-    0: 'warning',
-    1: 'info',
-    2: 'primary',
-    3: 'success'
-};
+import { formatDate } from '~/utils/date-formatter';
 
 export default {
     name: "AdminStudentExamsPage",
@@ -16,7 +11,7 @@ export default {
     middleware: 'auth',
     meta: {
         auth: true,
-        roles: [ADMIN_ROLE]
+        roles: [ADMIN_ROLE, SUB_ADMIN_ROLE]
     },
     data() {
         return {
@@ -26,7 +21,9 @@ export default {
             loading: false,
             errorMessage: "",
             STATUS_ENUM: STATUS_ENUM,
-            STATUS_VARIANT
+            STATUS_VARIANT,
+            STATUS_COLOR_MAP,
+            SCORE_PASS_THRESHOLD
         };
     },
     methods: {
@@ -48,18 +45,6 @@ export default {
         goToViewDetails(studentExamId) {
             this.$router.push(`/admin/exam/${this.examId}/student-exams/${studentExamId}`);
         },
-        formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('vi-VN', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-        },
         getStatusLabel(statusCode) {
             return this.STATUS_ENUM[statusCode] || 'UNKNOWN';
         },
@@ -67,19 +52,17 @@ export default {
             return this.STATUS_VARIANT[statusCode] || 'secondary';
         },
         getStatusStyle(statusCode) {
-            const variantMap = {
-                warning: '#ffc107',
-                info: '#17a2b8',
-                primary: '#007bff',
-                success: '#28a745'
-            };
             const variant = this.getStatusVariant(statusCode);
             return {
-                color: variantMap[variant] || '#6c757d'
+                color: STATUS_COLOR_MAP[variant] || '#6c757d'
             };
         },
         getScoreColor(score) {
-            return score < 40 ? '#dc3545' : '#28a745';
+            return score < SCORE_PASS_THRESHOLD ? '#dc3545' : '#28a745';
+        }
+        ,
+        formatDate(dateString) {
+            return formatDate(dateString);
         }
     },
     mounted() {

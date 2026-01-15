@@ -1,3 +1,4 @@
 const ADMIN_ROLE = 0;
 const USER_ROLE = 1;
-export { ADMIN_ROLE, USER_ROLE };
+const SUB_ADMIN_ROLE = 2;
+export { ADMIN_ROLE, USER_ROLE, SUB_ADMIN_ROLE };

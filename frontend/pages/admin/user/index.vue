@@ -1,7 +1,6 @@
 <script>
-import { ADMIN_ROLE } from '~/const/role.const';
+import { ADMIN_ROLE, SUB_ADMIN_ROLE,USER_ROLE } from '~/const/role.const';
 import { activeUser, deactivateUser, getAllUser, updateUserRole } from '~/services/user.service';
-import { USER_ROLE } from '~/const/role.const';
 import { getUserInfo } from '~/services/auth.service';
 
 export default{
@@ -10,7 +9,7 @@ export default{
     middleware: 'auth',
     meta: {
         auth: true,
-        roles: [ADMIN_ROLE]
+        roles: [ADMIN_ROLE, SUB_ADMIN_ROLE]
     },
     data(){
         return{
@@ -25,7 +24,11 @@ export default{
                 { key: 'role', label: 'Role' },
                 {key:'isActive', label: 'Status' },
                 ,{ key: 'actions', label: 'Actions' }
-            ]
+            ],
+            userInfo:getUserInfo(),
+            ADMIN_ROLE,
+            SUB_ADMIN_ROLE,
+            USER_ROLE
         };
     },
     computed:{
@@ -50,23 +53,57 @@ export default{
             });
         },
         getUserRole(role) {
-            if (role === ADMIN_ROLE) {
-                return "Admin";
-            } else if (role === USER_ROLE) {
-                return "User";
-            }
+                if (role === ADMIN_ROLE) {
+                    return "Admin";
+                } else if (role === SUB_ADMIN_ROLE) {
+                    return "Sub Admin";
+                } else if (role === USER_ROLE) {
+                    return "User";
+                }
             return "N/A";
         },
         getRoleBadgeVariant(role) {
             if (role === ADMIN_ROLE) {
                 return 'danger';
+            } else if (role === SUB_ADMIN_ROLE) {
+                return 'warning';
             } else if (role === USER_ROLE) {
                 return 'info';
             }
             return 'secondary';
-        }, handleUpdateRole(user){
-            const userId = user.userId;
-            const newRole = user.role === ADMIN_ROLE ? USER_ROLE : ADMIN_ROLE;
+        },
+        getAvailableRoles(currentRole) {
+            const allRoles = [
+                { value: ADMIN_ROLE, text: 'Admin' },
+                { value: SUB_ADMIN_ROLE, text: 'Sub Admin' },
+                { value: USER_ROLE, text: 'User' }
+            ];
+            return allRoles.filter(role => role.value !== currentRole);
+        },
+        handleRoleChange(user, newRole) {
+            const roleText = this.getUserRole(newRole);
+            this.$bvModal.msgBoxConfirm(
+                `Are you sure you want to change ${user.username}'s role to ${roleText}?`,
+                {
+                    title: 'Confirm Role Change',
+                    size: 'md',
+                    buttonSize: 'sm',
+                    okVariant: 'primary',
+                    okTitle: 'Yes',
+                    cancelTitle: 'No',
+                    footerClass: 'p-2',
+                    hideHeaderClose: false,
+                    centered: true
+                }
+            ).then(confirmed => {
+                if (confirmed) {
+                    this.updateRole(user.userId, newRole);
+                }
+            }).catch(err => {
+                console.error("Error in confirmation dialog:", err);
+            });
+        },
+        updateRole(userId, newRole) {
             try {
                 updateUserRole(userId, newRole).then((response)=>{
                     console.log("User role updated successfully:", response);
@@ -79,8 +116,8 @@ export default{
                 this.errorMessage = "An unexpected error occurred.";
                 console.error("Unexpected error:", error);
             }
-
-        },handleDeactivateUser(userId) {
+        },
+        handleDeactivateUser(userId) {
             deactivateUser(userId).then((response) => {
                 console.log("User deactivated successfully:", response);
                 this.fetchUsers();
@@ -169,19 +206,25 @@ export default{
                     </template>
                     
                     <template #cell(actions)="data">
-                        <b-button 
-                            size="sm" 
-                            variant="primary" 
-                            class="mr-2"
-                            @click="handleUpdateRole(data.item)"
-                            :disabled="data.item.userId === userId">
-                            <i class="fas fa-edit mr-1"></i>
-                            {{ getUserRole(data.item.role) === "Admin" ? 'Demote to User' : 'Promote to Admin' }}            
-                        </b-button>
-                        <b-button v-if="data.item.isActive" size="sm" variant="danger" :disabled="data.item.userId === userId" @click="handleUpdateActiveUser(data.item)">
+                        <b-form-select 
+                            v-model="data.item.role"
+                            :options="getAvailableRoles(data.item.role)"
+                            size="sm"
+                            class="mr-2 d-inline-block"
+                            style="width: auto; min-width: 150px;"
+                            :disabled="data.item.userId === userId || userInfo.role!==ADMIN_ROLE"
+                            @change="(newRole) => handleRoleChange(data.item, newRole)">
+                            <template #first>
+                                <b-form-select-option :value="data.item.role" disabled>
+                                    Change Role
+                                </b-form-select-option>
+                            </template>
+                        </b-form-select>
+                        
+                        <b-button v-if="data.item.isActive" size="sm" variant="danger" :disabled="data.item.userId === userId || userInfo.role!==ADMIN_ROLE" @click="handleUpdateActiveUser(data.item)">
                             <i class="fas fa-trash mr-1" ></i>Deactive
                         </b-button>
-                        <b-button v-else size="sm" variant="success" :disabled="data.item.userId === userId" @click="handleUpdateActiveUser(data.item)">
+                        <b-button v-else size="sm" variant="success" :disabled="data.item.userId === userId || userInfo.role!==ADMIN_ROLE" @click="handleUpdateActiveUser(data.item) ">
                             <i ></i>Active
                         </b-button>
                     </template>
@@ -202,6 +245,11 @@ export default{
 .badge-danger {
     background-color: #dc3545 !important;
     color: white !important;
+}
+
+.badge-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
 }
 
 .badge-info {

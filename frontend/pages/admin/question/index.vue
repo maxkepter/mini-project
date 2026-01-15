@@ -1,7 +1,8 @@
 <script>
-import { ADMIN_ROLE } from '~/const/role.const';
+import { ADMIN_ROLE, SUB_ADMIN_ROLE } from '~/const/role.const';
 import BaseModal from '~/components/BaseModal.vue';
 import { createQuestion, deleteQuestion, getAllQuestions, updateQuestion } from '~/services/question.service';
+import { getUserInfo } from '~/services/auth.service';
 
 export default {
     name: "AdminQuestionPage",
@@ -9,7 +10,7 @@ export default {
     middleware: 'auth',
     meta: {
         auth: true,
-        roles: [ADMIN_ROLE]
+        roles: [ADMIN_ROLE, SUB_ADMIN_ROLE]
     },
     components: { BaseModal },
     data() {
@@ -26,6 +27,7 @@ export default {
             isShowEditModal: false,
             editQuestionId: null,
             editQuestionData: null,
+            userInfo:getUserInfo()
         };
     },
     computed: {
@@ -202,7 +204,7 @@ export default {
                             <strong>{{ question.content }}</strong>
                             <div class="text-right">
                             <b-button size="sm" variant="warning" class="mr-2" @click="showEditModal(question.questionId)">Edit</b-button>
-                            <b-button size="sm" variant="danger" @click="deleteQuestion(question.questionId)">Delete</b-button>
+                            <b-button size="sm" variant="danger" @click="deleteQuestion(question.questionId)" :disabled="userInfo.role !== ADMIN_ROLE">Delete</b-button>
                         </div>
                         </div>
                         <div class="mb-3">

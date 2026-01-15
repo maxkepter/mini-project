@@ -25,12 +25,12 @@
         <div class="sidebar-footer border-top p-3" style="position: absolute; bottom: 0; width: 100%; left: 0;">
             <!-- Back to Home/Dashboard -->
             <NuxtLink
-                :to="userRole === ADMIN_ROLE ? '/admin' : '/'"
+                :to="(userRole === ADMIN_ROLE || userRole === SUB_ADMIN_ROLE) ? '/admin' : '/'"
                 class="nav-link d-flex align-items-center text-dark mb-2"
-                :title="sidebarCollapsed ? (userRole === ADMIN_ROLE ? 'Dashboard' : 'Home') : ''"
+                :title="sidebarCollapsed ? ((userRole === ADMIN_ROLE || userRole === SUB_ADMIN_ROLE) ? 'Dashboard' : 'Home') : ''"
             >
-                <i :class="userRole === ADMIN_ROLE ? 'fas fa-chart-line' : 'fas fa-home'" class="mr-2"></i>
-                <span v-show="!sidebarCollapsed">{{ userRole === ADMIN_ROLE ? 'Dashboard' : 'Home' }}</span>
+                <i :class="(userRole === ADMIN_ROLE || userRole === SUB_ADMIN_ROLE) ? 'fas fa-chart-line' : 'fas fa-home'" class="mr-2"></i>
+                <span v-show="!sidebarCollapsed">{{ (userRole === ADMIN_ROLE || userRole === SUB_ADMIN_ROLE) ? 'Dashboard' : 'Home' }}</span>
             </NuxtLink>
 
             <!-- Logout -->
@@ -45,7 +45,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { ADMIN_ROLE } from '~/const/role.const';
+import { ADMIN_ROLE, SUB_ADMIN_ROLE } from '~/const/role.const';
 import { logoutUser } from '~/services/auth.service';
 import { PROFILE_SIDEBAR_ITEMS } from '~/const/sidebar-items';
 import { LocalStorageKeys } from '~/const/local-storage.const';
@@ -56,6 +56,7 @@ export default {
         return {
             userRole: null,
             ADMIN_ROLE,
+            SUB_ADMIN_ROLE,
             sidebarItems: PROFILE_SIDEBAR_ITEMS
         };
     },

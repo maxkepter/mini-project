@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { ADMIN_ROLE } from '~/const/role.const';
+import { ADMIN_ROLE, SUB_ADMIN_ROLE } from '~/const/role.const';
 import { getExam } from '~/services/exam.service';
 import { getAllQuestions } from '~/services/question.service';
 import { getAllUser } from '~/services/user.service';
@@ -115,7 +115,7 @@ export default {
   middleware: 'auth',
   meta: {
     auth: true,
-    roles: [ADMIN_ROLE]
+    roles: [ADMIN_ROLE, SUB_ADMIN_ROLE]
   },
   data() {
     return {

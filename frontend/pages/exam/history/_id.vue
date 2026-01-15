@@ -1,14 +1,10 @@
 <script>
-import { USER_ROLE, ADMIN_ROLE } from '~/const/role.const';
+import { USER_ROLE, ADMIN_ROLE, SUB_ADMIN_ROLE } from '~/const/role.const';
 import { getStudentExamById } from '~/services/student-exam.service';
 import { STATUS_ENUM } from '~/const/student-exam-status.enum';
-
-const STATUS_VARIANT = {
-    0: 'warning',
-    1: 'info',
-    2: 'primary',
-    3: 'success'
-};
+import { STATUS_VARIANT } from '~/const/status-variant.const';
+import { formatDate } from '~/utils/date-formatter';
+import QuestionDetail from '~/components/QuestionDetail.vue';
 
 export default {
     name: "ExamHistoryDetailPage",
@@ -16,7 +12,7 @@ export default {
     middleware: 'auth',
     meta: {
         auth: true,
-        roles: [USER_ROLE, ADMIN_ROLE]
+        roles: [USER_ROLE, ADMIN_ROLE,SUB_ADMIN_ROLE]
     },
     data() {
         return {
@@ -46,24 +42,19 @@ export default {
         backToHistory() {
             this.$router.push('/exam/history');
         },
-        formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('vi-VN', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-        },
         getStatusLabel(statusCode) {
             return this.STATUS_ENUM[statusCode] || 'UNKNOWN';
         },
         getStatusVariant(statusCode) {
             return this.STATUS_VARIANT[statusCode] || 'secondary';
         }
+        ,
+        formatDate(dateString) {
+            return formatDate(dateString);
+        }
+    },
+    components: {
+        QuestionDetail
     },
     mounted() {
         this.fetchStudentExamDetail();
@@ -148,51 +139,12 @@ export default {
 
                 <!-- Questions and Answers -->
                 <div class="row">
-                    <div v-for="(question, index) in studentExam.studentExamQuestions" :key="question.studentExamQuestionId" class="col-12 mb-4">
-                        <b-card class="shadow-sm">
-                            <!-- Question -->
-                            <div class="mb-4">
-                                <h5 class="font-weight-bold">
-                                    <span class="badge badge-primary mr-2">Q{{ index + 1 }}</span>
-                                    {{ question.content }}
-                                </h5>
-                            </div>
-
-                            <!-- Options -->
-                            <div>
-                                <div v-for="(option, optIndex) in question.options" :key="option.studentExamAnswerId" class="mb-3">
-                                    <div
-                                        class="p-3 border rounded"
-                                        :style="{
-                                            backgroundColor: option.isSelected ? '#e8f5e9' : '#f5f5f5',
-                                            borderColor: option.isSelected ? '#4caf50' : '#ddd',
-                                            borderWidth: option.isSelected ? '2px' : '1px'
-                                        }"
-                                    >
-                                        <div class="d-flex align-items-center">
-                                            <div class="mr-3">
-                                                <span v-if="option.isSelected" class="text-success" style="font-size: 20px;">
-                                                    <i class="fas fa-check-circle"></i>
-                                                </span>
-                                                <span v-else class="text-muted" style="font-size: 20px;">
-                                                    <i class="fas fa-circle"></i>
-                                                </span>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <p class="mb-0">
-                                                    <strong>{{ String.fromCharCode(65 + optIndex) }}.</strong>
-                                                    {{ option.content }}
-                                                </p>
-                                            </div>
-                                            <div v-if="option.isSelected" class="ml-3">
-                                                <b-badge variant="success">Selected</b-badge>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </b-card>
-                    </div>
+                    <question-detail
+                        v-for="(question, index) in studentExam.studentExamQuestions"
+                        :key="question.studentExamQuestionId"
+                        :question="question"
+                        :index="index"
+                    />
                 </div>
             </div>
         </b-container>

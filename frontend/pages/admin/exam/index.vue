@@ -1,5 +1,6 @@
 <script>
-import { ADMIN_ROLE } from '~/const/role.const';
+import { ADMIN_ROLE, SUB_ADMIN_ROLE } from '~/const/role.const';
+import { getUserInfo } from '~/services/auth.service';
 import { getExam, deleteExam } from '~/services/exam.service';
 
 export default {
@@ -8,7 +9,7 @@ export default {
     middleware: 'auth',
     meta: {
         auth: true,
-        roles: [ADMIN_ROLE]
+        roles: [ADMIN_ROLE, SUB_ADMIN_ROLE]
     },
     data() {
         return {
@@ -17,6 +18,8 @@ export default {
             searchQuery: '',
             errorMessage: '',
             loading: false,
+            userInfo:getUserInfo(),
+            ADMIN_ROLE,
         };
     },
     methods: {
@@ -154,7 +157,9 @@ export default {
                                 <b-button 
                                     variant="danger" 
                                     size="sm" 
-                                    @click="deleteExam(exam.examId)">
+                                    @click="deleteExam(exam.examId)"
+                                    :disabled="userInfo.role !== ADMIN_ROLE"
+                                    >
                                     <i class="fas fa-trash mr-2"></i> Delete
                                 </b-button>
                             </div>

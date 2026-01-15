@@ -1,5 +1,5 @@
 <script>
-import { ADMIN_ROLE } from '~/const/role.const';
+import { ADMIN_ROLE, SUB_ADMIN_ROLE } from '~/const/role.const';
 import BaseModal from '~/components/BaseModal.vue';
 import { getExamById, updateExam } from '~/services/exam.service';
 import { getAllQuestions } from '~/services/question.service';
@@ -10,7 +10,7 @@ export default {
     middleware: 'auth',
     meta: {
         auth: true,
-        roles: [ADMIN_ROLE]
+        roles: [ADMIN_ROLE, SUB_ADMIN_ROLE]
     },
     components: {
         BaseModal

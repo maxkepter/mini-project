@@ -1,5 +1,5 @@
 <script>
-import { USER_ROLE, ADMIN_ROLE } from '~/const/role.const';
+import { USER_ROLE, ADMIN_ROLE, SUB_ADMIN_ROLE } from '~/const/role.const';
 import { getExam } from '~/services/exam.service';
 
 export default {
@@ -8,7 +8,7 @@ export default {
     middleware: 'auth',
     meta: {
         auth: true,
-        roles: [USER_ROLE, ADMIN_ROLE]
+        roles: [USER_ROLE, ADMIN_ROLE,SUB_ADMIN_ROLE]
     },
     data() {
         return {

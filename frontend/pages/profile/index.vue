@@ -1,5 +1,5 @@
 <script>
-import { ADMIN_ROLE, USER_ROLE } from '~/const/role.const';
+import { ADMIN_ROLE, USER_ROLE, SUB_ADMIN_ROLE } from '~/const/role.const';
 import { getUserProfile } from '~/services/user.service';
 
 export default {
@@ -8,12 +8,7 @@ export default {
   middleware: 'auth',
   meta: {
     auth: true,
-    roles: [ADMIN_ROLE, USER_ROLE]
-  },
-  middleware: 'auth',
-  meta: {
-    auth: true,
-    roles: [0, 1] // Both ADMIN and USER
+    roles: [ADMIN_ROLE, SUB_ADMIN_ROLE, USER_ROLE]
   },
   data() {
     return {
@@ -38,6 +33,8 @@ export default {
     roleBadgeVariant() {
       if (this.userInfo.role === ADMIN_ROLE) {
         return 'danger';
+      } else if (this.userInfo.role === SUB_ADMIN_ROLE) {
+        return 'warning';
       } else if (this.userInfo.role === USER_ROLE) {
         return 'info';
       }
@@ -46,6 +43,8 @@ export default {
     roleValue() {
       if (this.userInfo.role === ADMIN_ROLE) {
         return "Admin";
+      } else if (this.userInfo.role === SUB_ADMIN_ROLE) {
+        return "Sub Admin";
       } else if (this.userInfo.role === USER_ROLE) {
         return "User";
       }
@@ -184,6 +183,11 @@ export default {
 .badge-danger {
   background-color: #dc3545 !important;
   color: white !important;
+}
+
+.badge-warning {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
 }
 
 .badge-info {

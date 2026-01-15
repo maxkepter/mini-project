@@ -27,7 +27,7 @@
         </ul>
 
         <!-- Profile Section -->
-        <div class="sidebar-footer border-top p-3" style="position: absolute; bottom: 0; width: 100%; left: 0; max-height: 150px; overflow-y: auto;">
+        <div class="sidebar-footer border-top p-3" style="position: absolute; bottom: 0; width: 100%; left: 0;">
             <!-- Profile Items -->
             <NuxtLink
                 v-for="item in profileItems"
@@ -40,6 +40,13 @@
                 <i :class="`fas ${item.icon} mr-2`"></i>
                 <span v-show="!sidebarCollapsed">{{ item.name }}</span>
             </NuxtLink>
+
+            <!-- Logout -->
+            <button class="btn btn-outline-danger w-100" @click="logout" :title="sidebarCollapsed ? 'Logout' : ''">
+                <i class="fas fa-sign-out-alt mr-2" v-show="!sidebarCollapsed"></i>
+                <span v-show="!sidebarCollapsed">Logout</span>
+                <i v-show="sidebarCollapsed" class="fas fa-sign-out-alt"></i>
+            </button>
         </div>
     </nav>
 </template>
@@ -47,6 +54,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { ADMIN_SIDEBAR_ITEMS, ADMIN_PROFILE_ITEMS } from '~/const/sidebar-items';
+import { logoutUser } from '~/services/auth.service';
 
 export default {
     name: 'AdminSidebar',
@@ -78,6 +86,9 @@ export default {
                 other.route.length > currentRoute.length &&
                 this.$route.path.startsWith(other.route)
             );
+        },
+        logout() {
+            logoutUser();
         }
     }
 }
@@ -120,5 +131,15 @@ export default {
 
 i {
     width: 20px;
+}
+
+.btn {
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
 }
 </style>

@@ -1,7 +1,7 @@
 <script>
 import { Urls } from "../../../const/url.const";
 import { loginUser } from "../../../services/auth.service";
-import { ADMIN_ROLE, USER_ROLE } from "../../../const/role.const";
+import { ADMIN_ROLE, USER_ROLE, SUB_ADMIN_ROLE } from "../../../const/role.const";
 import { LocalStorageKeys } from "../../../const/local-storage.const";
 
 export default {
@@ -36,8 +36,8 @@ export default {
             
             // Add small delay to ensure localStorage is synced
             setTimeout(() => {
-              // Redirect based on role
-              if (info.role === ADMIN_ROLE) {
+              // Redirect based on role (treat sub-admin like admin)
+              if (info.role === ADMIN_ROLE || info.role === SUB_ADMIN_ROLE) {
                 this.$router.push({ path: '/admin' });
               } else if (info.role === USER_ROLE) {
                 this.$router.push({ path: Urls.HOME });
