@@ -24,6 +24,7 @@ This is a comprehensive exam management system that allows users to create, mana
 ## Tech Stack
 
 ### Backend
+
 - **Framework**: NestJS 11.0
 - **Language**: TypeScript
 - **Database**: MSSQL (Microsoft SQL Server)
@@ -34,6 +35,7 @@ This is a comprehensive exam management system that allows users to create, mana
 - **Validation**: class-validator, class-transformer
 
 ### Frontend
+
 - **Framework**: Nuxt.js 2.14
 - **UI Framework**: Bootstrap Vue
 - **HTTP Client**: Axios
@@ -43,6 +45,7 @@ This is a comprehensive exam management system that allows users to create, mana
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
+
 - **Node.js**: v18 or higher
 - **npm**: v8 or higher
 - **MSSQL Server**: v2019 or higher (or use Azure SQL Database)
@@ -100,11 +103,12 @@ npm install
    ```
 
    **Important Notes**:
+
    - Replace `DB_PASSWORD` with your MSSQL Server password
    - Use a strong, random string for `JWT_SECRET`
    - Adjust `JWT_EXPIRATION` as needed (in seconds)
 
-2. **Database Configuration**: 
+2. **Database Configuration**:
    - The database configuration is handled by TypeORM
    - Update `src/config/typeorm.config.ts` if you need custom settings
 
@@ -163,12 +167,14 @@ The frontend will be available at `http://localhost:3000` (Nuxt will automatical
 You can run both services simultaneously by using separate terminal windows:
 
 **Terminal 1 - Backend**:
+
 ```bash
 cd backend/mini-project
 npm run start:dev
 ```
 
 **Terminal 2 - Frontend**:
+
 ```bash
 cd frontend
 npm run dev
@@ -198,6 +204,7 @@ npm run test:debug
 ```
 
 Test files are located in:
+
 - Unit tests: `src/**/*.spec.ts`
 - E2E tests: `test/`
 
@@ -262,6 +269,7 @@ mini-project/
 ## Features
 
 ### Authentication & Authorization
+
 - User registration and login
 - JWT-based token authentication
 - Role-based access control (RBAC):
@@ -272,6 +280,7 @@ mini-project/
 - Token refresh mechanism
 
 ### User Management
+
 - User registration with email verification
 - User profile management
 - Password change/reset functionality
@@ -279,6 +288,7 @@ mini-project/
 - Role assignment and modification
 
 ### Exam Management
+
 - Create and edit exams
 - Set exam duration and status
 - View all exams with filtering
@@ -287,6 +297,7 @@ mini-project/
 - Bulk exam operations
 
 ### Question Management
+
 - Create multiple-choice questions
 - Add options with correct answer marking
 - Edit and delete questions
@@ -295,6 +306,7 @@ mini-project/
 - Question validation
 
 ### Student Exam Features
+
 - Take exams with timer
 - Submit individual answers
 - Auto-save functionality
@@ -305,6 +317,7 @@ mini-project/
 - Exam history and statistics
 
 ### Additional Features
+
 - Real-time exam timer
 - Answer validation
 - Score calculation
@@ -316,30 +329,30 @@ mini-project/
 
 ### Backend
 
-| Script | Description |
-|--------|-------------|
-| `npm run build` | Compile TypeScript to JavaScript |
-| `npm run start` | Start the application in production mode |
-| `npm run start:dev` | Start with hot reload (development) |
-| `npm run start:debug` | Start with debugging enabled |
-| `npm run start:prod` | Start from production build |
-| `npm run lint` | Run ESLint and fix issues |
-| `npm run format` | Format code with Prettier |
-| `npm run seed` | Seed database with initial data |
-| `npm run test` | Run unit tests |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test:cov` | Run tests with coverage |
-| `npm run test:e2e` | Run end-to-end tests |
-| `npm run test:debug` | Debug tests |
+| Script                | Description                              |
+| --------------------- | ---------------------------------------- |
+| `npm run build`       | Compile TypeScript to JavaScript         |
+| `npm run start`       | Start the application in production mode |
+| `npm run start:dev`   | Start with hot reload (development)      |
+| `npm run start:debug` | Start with debugging enabled             |
+| `npm run start:prod`  | Start from production build              |
+| `npm run lint`        | Run ESLint and fix issues                |
+| `npm run format`      | Format code with Prettier                |
+| `npm run seed`        | Seed database with initial data          |
+| `npm run test`        | Run unit tests                           |
+| `npm run test:watch`  | Run tests in watch mode                  |
+| `npm run test:cov`    | Run tests with coverage                  |
+| `npm run test:e2e`    | Run end-to-end tests                     |
+| `npm run test:debug`  | Debug tests                              |
 
 ### Frontend
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server with HMR |
-| `npm run build` | Build for production |
-| `npm run start` | Start production server |
-| `npm run generate` | Generate static site |
+| Script             | Description                       |
+| ------------------ | --------------------------------- |
+| `npm run dev`      | Start development server with HMR |
+| `npm run build`    | Build for production              |
+| `npm run start`    | Start production server           |
+| `npm run generate` | Generate static site              |
 
 ## API Documentation
 
@@ -350,6 +363,7 @@ http://localhost:3000/api/docs
 ```
 
 This Swagger UI documentation provides:
+
 - All available endpoints
 - Request/response schemas
 - Authentication requirements
@@ -359,18 +373,21 @@ This Swagger UI documentation provides:
 ### Main API Endpoints
 
 #### Authentication
+
 - `POST /api/auth/register` - User registration
 - `POST /api/auth/login` - User login
 - `POST /api/auth/refresh` - Refresh access token
 - `POST /api/auth/logout` - User logout
 
 #### Users
+
 - `GET /api/users` - Get all users (Admin only)
 - `GET /api/users/:id` - Get user by ID
 - `PUT /api/users/:id` - Update user
 - `DELETE /api/users/:id` - Delete user
 
 #### Exams
+
 - `GET /api/exams` - Get all exams
 - `GET /api/exams/:id` - Get exam details
 - `POST /api/exams` - Create new exam
@@ -378,6 +395,7 @@ This Swagger UI documentation provides:
 - `DELETE /api/exams/:id` - Delete exam
 
 #### Questions
+
 - `GET /api/questions` - Get all questions
 - `GET /api/questions/:id` - Get question details
 - `POST /api/questions` - Create new question
@@ -385,6 +403,7 @@ This Swagger UI documentation provides:
 - `DELETE /api/questions/:id` - Delete question
 
 #### Student Exams
+
 - `GET /api/student-exams` - Get student's exams
 - `POST /api/student-exams/:examId/start` - Start an exam
 - `POST /api/student-exams/:examId/submit` - Submit exam
@@ -406,6 +425,7 @@ The application uses TypeORM with MSSQL. The database schema is automatically cr
 ### Database Entities
 
 The system includes the following main entities:
+
 - **User** - System users with roles
 - **Exam** - Examination configurations
 - **Question** - Exam questions
@@ -420,25 +440,31 @@ The system includes the following main entities:
 ### Common Issues
 
 #### 1. Port Already in Use
+
 **Problem**: Port 3000 is already in use
 
 **Solution**:
+
 - Change the PORT in `.env` for backend
 - Nuxt frontend will automatically use the next available port
 
 #### 2. Database Connection Error
+
 **Problem**: Cannot connect to MSSQL server
 
 **Solution**:
+
 - Verify MSSQL Server is running and accessible
 - Check connection credentials in `.env`
 - Ensure the database `exam_db` exists
 - Verify firewall allows connection to MSSQL port (default: 1433)
 
 #### 3. Module Not Found Errors
+
 **Problem**: "Cannot find module" errors
 
 **Solution**:
+
 ```bash
 # Clear and reinstall dependencies
 rm -r node_modules
@@ -446,25 +472,31 @@ npm install
 ```
 
 #### 4. CORS Errors
+
 **Problem**: Frontend cannot reach backend API
 
 **Solution**:
+
 - Verify backend is running on the configured URL
 - Check `NUXT_ENV_API_URL` in frontend `.env.local`
 - Ensure CORS is properly configured in backend
 
 #### 5. Authentication Failed
+
 **Problem**: Cannot login or JWT errors
 
 **Solution**:
+
 - Verify `JWT_SECRET` is set in backend `.env`
 - Ensure tokens haven't expired
 - Check browser console and backend logs for specific errors
 
 #### 6. Node Modules Cache Issues
+
 **Problem**: Strange build or runtime errors
 
 **Solution**:
+
 ```bash
 # Clear all caches
 npm cache clean --force
@@ -514,6 +546,7 @@ NUXT_ENV_API_URL=http://localhost:3000/api  # Backend API base URL
 ## Contributing
 
 1. Create a new branch for your feature:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -521,11 +554,13 @@ NUXT_ENV_API_URL=http://localhost:3000/api  # Backend API base URL
 2. Make your changes and ensure they follow project conventions
 
 3. Commit your changes:
+
    ```bash
    git commit -am 'Add new feature: description'
    ```
 
 4. Push to your branch:
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -559,6 +594,7 @@ This project is licensed under the UNLICENSED license.
 ## Support
 
 For issues or questions:
+
 1. Check this README for common solutions
 2. Review API documentation at `/api/docs`
 3. Check backend logs for error details
