@@ -27,12 +27,12 @@ import { UpdateRoleRequest } from './dtos.request';
 
 @Controller('api/admin/users')
 @UseGuards(JwtGuard, RolesGuard)
-@Roles(UserRole.ADMIN)
 @ApiBearerAuth()
 export class AdminUserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.SUB_ADMIN)
   @ApiOperation({ summary: 'Get all users' })
   @ApiOkResponse({ type: [UserResponse] })
   async getAllUsers(): Promise<UserResponse[]> {
@@ -40,6 +40,7 @@ export class AdminUserController {
   }
 
   @Get('profile/:userId')
+  @Roles(UserRole.ADMIN, UserRole.SUB_ADMIN)
   @ApiOperation({ summary: 'Get user profile by ID' })
   @ApiOkResponse({ type: UserResponse })
   async getUserProfile(@Param('id') id: number): Promise<UserResponse> {
@@ -47,6 +48,7 @@ export class AdminUserController {
   }
 
   @Delete(':userId')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Deactivate a user by ID' })
   @ApiResponse({ status: 204, description: 'User deactivated successfully' })
   async deactivateUser(
@@ -74,6 +76,7 @@ export class AdminUserController {
   }
 
   @Patch(':userId/role')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Update user role' })
   @ApiOkResponse({ type: UserResponse })
   async updateUserRole(

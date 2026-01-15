@@ -24,11 +24,11 @@ import { UserRole } from 'src/domain/enum/UserRole.enum';
 @ApiTags('Admin Questions')
 @Controller('api/admin/questions')
 @UseGuards(JwtGuard, RolesGuard)
-@Roles(UserRole.ADMIN)
 @ApiBearerAuth()
 export class AdminQuestionController {
   constructor(private readonly questionService: QuestionService) {}
   @Post()
+  @Roles(UserRole.ADMIN, UserRole.SUB_ADMIN)
   @ApiOperation({ summary: 'Create question' })
   @ApiResponse({ status: 201 })
   async createQuestion(@Body() request: QuestionRequest): Promise<unknown> {
@@ -36,6 +36,7 @@ export class AdminQuestionController {
   }
 
   @Delete(':id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Delete question by id' })
   @ApiResponse({ status: 200 })
   async deleteQuestion(@Param('id') id: string): Promise<void> {
@@ -43,6 +44,7 @@ export class AdminQuestionController {
   }
 
   @Get()
+  @Roles(UserRole.ADMIN, UserRole.SUB_ADMIN)
   @ApiOperation({ summary: 'Get all questions' })
   @ApiResponse({ status: 200 })
   async getAllQuestions(): Promise<unknown> {
@@ -50,6 +52,7 @@ export class AdminQuestionController {
   }
 
   @Put(':id')
+  @Roles(UserRole.ADMIN, UserRole.SUB_ADMIN)
   @ApiOperation({ summary: 'Update question by id' })
   @ApiResponse({ status: 200 })
   async updateQuestion(

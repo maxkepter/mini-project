@@ -37,7 +37,7 @@ import { StudentExamSelectionRequest } from 'src/service/dto/request/studentExam
 @ApiTags('Student Exams')
 @Controller('api/student/exams')
 @UseGuards(JwtGuard, RolesGuard)
-@Roles(UserRole.STUDENT, UserRole.ADMIN)
+@Roles(UserRole.STUDENT, UserRole.ADMIN, UserRole.SUB_ADMIN)
 @ApiBearerAuth()
 export class StudentExamController {
   constructor(private readonly studentExamService: StudentExamService) {}

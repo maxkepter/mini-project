@@ -16,7 +16,7 @@ import { UserRole } from 'src/domain/enum/UserRole.enum';
 @ApiTags('User Exams')
 @Controller('api/user/exams')
 @UseGuards(JwtGuard, RolesGuard)
-@Roles(UserRole.STUDENT, UserRole.ADMIN)
+@Roles(UserRole.STUDENT, UserRole.ADMIN, UserRole.SUB_ADMIN)
 @ApiBearerAuth()
 export class UserExamController {
   constructor(private readonly examService: ExamService) {}

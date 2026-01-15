@@ -71,7 +71,7 @@ export class StudentExamService {
   ): Promise<StudentExamResponse> {
     const inprogressExam = await this.getInprogressExam(userId);
     if (inprogressExam) {
-      return StudentExamMapper.toResponse(inprogressExam);
+      return StudentExamMapper.toResponse(inprogressExam, true);
     }
     return this.createStudentExam(userId, request);
   }

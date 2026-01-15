@@ -15,12 +15,12 @@ import { StudentExamSummaryResponse } from './dtos.response';
 @Controller('api/admin/student/exams')
 @ApiTags('Admin Student Exams')
 @UseGuards(JwtGuard, RolesGuard)
-@Roles(UserRole.ADMIN)
 @ApiBearerAuth()
 export class AdminStudentExamController {
   constructor(private readonly studentExamService: StudentExamService) {}
 
   @Get(':examId')
+  @Roles(UserRole.ADMIN, UserRole.SUB_ADMIN)
   @ApiOperation({ summary: 'Get student exams by exam id' })
   @ApiOkResponse({ type: [StudentExamSummaryResponse] })
   async getStudentExamsByExamId(
